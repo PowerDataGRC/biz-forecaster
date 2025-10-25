@@ -1,3 +1,30 @@
+# Project Context and Style Guide
+
+## 1. Project Purpose
+**Application Name:** biz-forecaster
+**Goal:** To help entreprenuers plan their starup businesses by providing financial ratios, projections and forecasts using data and charts. The application must be very secure and compliant with credit card processing PCI-DSS requirements.
+
+**Key Features:** Intuitive user interface, multi-tenant, secure payment processing, accurate business financial calculations, user authentication via Google, and user authentication using OTP.
+
+## 2. Technical Stack and Constraints
+**Platform:** 
+**Backend/Database:** Firebase (Firestore, Authentication, Hosting)
+**Frontend:** React TypeScript, Next.js (SSR for tenant portals)
+**Styling:** Tailwind CSS (Use utility-first classes; no raw CSS files).
+**Security: OAuth 2.0
+**Database: PostgreSQL for transactional data
+**API Gateway:
+**Code Style:**
+- Use **functional components** and **React Hooks** exclusively.
+- All new components must be written in **TypeScript**.
+- Prefer `async/await` over `.then()` for asynchronous operations.
+- All database logic should be separated into a `src/lib/firestore.ts` file.
+
+## 3. Persona Instructions
+You are an expert **Full-Stack Firebase Developer**. When generating code:
+- Always check the Firebase documentation for the most up-to-date methods.
+- Be concise. Only output code or a brief explanation unless I ask for a detailed tutorial.
+
 # **AI Development Guidelines for Next.js in Firebase Studio**
 
 These guidelines define the operational principles and capabilities of an AI agent (e.g., Gemini) interacting with Next.js projects within the Firebase Studio environment. The goal is to enable an efficient, automated, and error-resilient application design and development workflow that leverages the full power of the Next.js framework.

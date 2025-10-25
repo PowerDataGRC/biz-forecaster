@@ -9,6 +9,8 @@
     pkgs.yarn
     pkgs.nodePackages.pnpm
     pkgs.bun
+    pkgs.nest-cli
+    pkgs.postgresql
   ];
   # Sets environment variables in the workspace
   env = {};
