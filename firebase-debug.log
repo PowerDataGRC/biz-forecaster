@@ -380,3 +380,211 @@
 [error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
 [debug] [2025-10-25T04:12:05.289Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
 [debug] [2025-10-25T04:12:05.289Z] > authorizing via signed-in user (shabestari@gmail.com)
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[debug] [2025-10-25T15:44:37.209Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:44:37.272Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:01.081Z] Running auto auth
+[debug] [2025-10-25T15:45:01.087Z] Running auto auth
+[debug] [2025-10-25T15:45:01.271Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:01.283Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:01.296Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:01.298Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:01.308Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:01.309Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:01.315Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:01.391Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:01.405Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firestore.googleapis.com [none]
+[debug] [2025-10-25T15:45:01.405Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firestore.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:01.863Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/storage.googleapis.com [none]
+[debug] [2025-10-25T15:45:01.863Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/storage.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:01.879Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebasedataconnect.googleapis.com [none]
+[debug] [2025-10-25T15:45:01.886Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebasedataconnect.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:01.895Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/identitytoolkit.googleapis.com [none]
+[debug] [2025-10-25T15:45:01.898Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/identitytoolkit.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:01.907Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/fcm.googleapis.com [none]
+[debug] [2025-10-25T15:45:01.910Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/fcm.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:01.928Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/cloudfunctions.googleapis.com [none]
+[debug] [2025-10-25T15:45:01.928Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:01.947Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseremoteconfig.googleapis.com [none]
+[debug] [2025-10-25T15:45:01.949Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseremoteconfig.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:01.960Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseio.com [none]
+[debug] [2025-10-25T15:45:01.962Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseio.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:02.139Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:02.153Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:02.160Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:02.167Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:02.170Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:02.176Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:02.180Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:02.212Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:02.212Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firestore.googleapis.com [none]
+[debug] [2025-10-25T15:45:02.213Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firestore.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:02.241Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/storage.googleapis.com [none]
+[debug] [2025-10-25T15:45:02.241Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/storage.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:02.256Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebasedataconnect.googleapis.com [none]
+[debug] [2025-10-25T15:45:02.256Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebasedataconnect.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:02.266Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/identitytoolkit.googleapis.com [none]
+[debug] [2025-10-25T15:45:02.267Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/identitytoolkit.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:02.270Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/fcm.googleapis.com [none]
+[debug] [2025-10-25T15:45:02.271Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/fcm.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:02.273Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/cloudfunctions.googleapis.com [none]
+[debug] [2025-10-25T15:45:02.273Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:02.275Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseremoteconfig.googleapis.com [none]
+[debug] [2025-10-25T15:45:02.275Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseremoteconfig.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:02.280Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseio.com [none]
+[debug] [2025-10-25T15:45:02.281Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseio.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:02.915Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseio.com 403
+[debug] [2025-10-25T15:45:02.919Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseio.com [omitted]
+[debug] [2025-10-25T15:45:02.978Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebasedataconnect.googleapis.com 200
+[debug] [2025-10-25T15:45:02.978Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebasedataconnect.googleapis.com [omitted]
+[debug] [2025-10-25T15:45:03.048Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseremoteconfig.googleapis.com 200
+[debug] [2025-10-25T15:45:03.048Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseremoteconfig.googleapis.com [omitted]
+[debug] [2025-10-25T15:45:03.096Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/storage.googleapis.com 200
+[debug] [2025-10-25T15:45:03.096Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/storage.googleapis.com [omitted]
+[debug] [2025-10-25T15:45:03.121Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firestore.googleapis.com 200
+[debug] [2025-10-25T15:45:03.122Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firestore.googleapis.com [omitted]
+[debug] [2025-10-25T15:45:03.138Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/cloudfunctions.googleapis.com 200
+[debug] [2025-10-25T15:45:03.138Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/cloudfunctions.googleapis.com [omitted]
+[debug] [2025-10-25T15:45:03.197Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/fcm.googleapis.com 200
+[debug] [2025-10-25T15:45:03.197Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/fcm.googleapis.com [omitted]
+[debug] [2025-10-25T15:45:03.247Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/identitytoolkit.googleapis.com 200
+[debug] [2025-10-25T15:45:03.247Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/identitytoolkit.googleapis.com [omitted]
+[debug] [2025-10-25T15:45:03.287Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firestore.googleapis.com 200
+[debug] [2025-10-25T15:45:03.293Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firestore.googleapis.com [omitted]
+[debug] [2025-10-25T15:45:03.315Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseremoteconfig.googleapis.com 200
+[debug] [2025-10-25T15:45:03.317Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseremoteconfig.googleapis.com [omitted]
+[debug] [2025-10-25T15:45:03.361Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/fcm.googleapis.com 200
+[debug] [2025-10-25T15:45:03.361Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/fcm.googleapis.com [omitted]
+[debug] [2025-10-25T15:45:03.391Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebasedataconnect.googleapis.com 200
+[debug] [2025-10-25T15:45:03.391Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebasedataconnect.googleapis.com [omitted]
+[debug] [2025-10-25T15:45:03.399Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseio.com 403
+[debug] [2025-10-25T15:45:03.399Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseio.com [omitted]
+[debug] [2025-10-25T15:45:03.428Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/storage.googleapis.com 200
+[debug] [2025-10-25T15:45:03.428Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/storage.googleapis.com [omitted]
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[debug] [2025-10-25T15:45:03.469Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:03.470Z] > authorizing via signed-in user (shabestari@gmail.com)
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[debug] [2025-10-25T15:45:03.490Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:03.490Z] > authorizing via signed-in user (shabestari@gmail.com)
+[debug] [2025-10-25T15:45:03.512Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/cloudfunctions.googleapis.com 200
+[debug] [2025-10-25T15:45:03.512Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/cloudfunctions.googleapis.com [omitted]
+[debug] [2025-10-25T15:45:03.524Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/identitytoolkit.googleapis.com 200
+[debug] [2025-10-25T15:45:03.530Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/identitytoolkit.googleapis.com [omitted]
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[debug] [2025-10-25T15:45:16.775Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:16.776Z] > authorizing via signed-in user (shabestari@gmail.com)
+[debug] [2025-10-25T15:45:16.800Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:16.804Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:16.804Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:16.805Z] > authorizing via signed-in user (shabestari@gmail.com)
+[debug] [2025-10-25T15:45:16.810Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:16.811Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:16.811Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:16.813Z] > authorizing via signed-in user (shabestari@gmail.com)
+[debug] [2025-10-25T15:45:16.814Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:16.814Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:16.815Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:16.815Z] > authorizing via signed-in user (shabestari@gmail.com)
+[debug] [2025-10-25T15:45:16.829Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:16.830Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:16.830Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:16.834Z] > authorizing via signed-in user (shabestari@gmail.com)
+[debug] [2025-10-25T15:45:16.834Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:16.834Z] > authorizing via signed-in user (shabestari@gmail.com)
+[debug] [2025-10-25T15:45:16.835Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:16.835Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:16.839Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:16.839Z] > authorizing via signed-in user (shabestari@gmail.com)
+[debug] [2025-10-25T15:45:16.841Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:16.842Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:16.842Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:16.842Z] > authorizing via signed-in user (shabestari@gmail.com)
+[debug] [2025-10-25T15:45:16.843Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:16.843Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:16.843Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:16.843Z] > authorizing via signed-in user (shabestari@gmail.com)
+[debug] [2025-10-25T15:45:16.846Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:16.846Z] No OAuth tokens found
+[debug] [2025-10-25T15:45:16.846Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:16.846Z] > authorizing via signed-in user (shabestari@gmail.com)
+[debug] [2025-10-25T15:45:16.853Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firestore.googleapis.com [none]
+[debug] [2025-10-25T15:45:16.853Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firestore.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:17.015Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebasedataconnect.googleapis.com [none]
+[debug] [2025-10-25T15:45:17.015Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebasedataconnect.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:17.021Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/cloudfunctions.googleapis.com [none]
+[debug] [2025-10-25T15:45:17.024Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:17.028Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseio.com [none]
+[debug] [2025-10-25T15:45:17.028Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseio.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:17.033Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firestore.googleapis.com [none]
+[debug] [2025-10-25T15:45:17.033Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firestore.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:17.039Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebasedataconnect.googleapis.com [none]
+[debug] [2025-10-25T15:45:17.039Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebasedataconnect.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:17.043Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/cloudfunctions.googleapis.com [none]
+[debug] [2025-10-25T15:45:17.043Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:17.048Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseio.com [none]
+[debug] [2025-10-25T15:45:17.048Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseio.com x-goog-quota-user=projects/business-forecaster-dc31f
+[debug] [2025-10-25T15:45:17.357Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseio.com 403
+[debug] [2025-10-25T15:45:17.357Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseio.com [omitted]
+[debug] [2025-10-25T15:45:17.416Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebasedataconnect.googleapis.com 200
+[debug] [2025-10-25T15:45:17.420Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebasedataconnect.googleapis.com [omitted]
+[debug] [2025-10-25T15:45:17.453Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseio.com 403
+[debug] [2025-10-25T15:45:17.453Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebaseio.com [omitted]
+[debug] [2025-10-25T15:45:17.534Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firestore.googleapis.com 200
+[debug] [2025-10-25T15:45:17.535Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firestore.googleapis.com [omitted]
+[debug] [2025-10-25T15:45:17.590Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/cloudfunctions.googleapis.com 200
+[debug] [2025-10-25T15:45:17.590Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/cloudfunctions.googleapis.com [omitted]
+[debug] [2025-10-25T15:45:17.594Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebasedataconnect.googleapis.com 200
+[debug] [2025-10-25T15:45:17.594Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firebasedataconnect.googleapis.com [omitted]
+[debug] [2025-10-25T15:45:17.604Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/cloudfunctions.googleapis.com 200
+[debug] [2025-10-25T15:45:17.604Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/cloudfunctions.googleapis.com [omitted]
+[debug] [2025-10-25T15:45:17.608Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firestore.googleapis.com 200
+[debug] [2025-10-25T15:45:17.608Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/business-forecaster-dc31f/services/firestore.googleapis.com [omitted]
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[debug] [2025-10-25T15:45:17.622Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:17.622Z] > authorizing via signed-in user (shabestari@gmail.com)
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[debug] [2025-10-25T15:45:17.627Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:17.627Z] > authorizing via signed-in user (shabestari@gmail.com)
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[debug] [2025-10-25T15:45:17.725Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:17.725Z] > authorizing via signed-in user (shabestari@gmail.com)
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[debug] [2025-10-25T15:45:17.732Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:17.732Z] > authorizing via signed-in user (shabestari@gmail.com)
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[debug] [2025-10-25T15:45:17.747Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:17.747Z] > authorizing via signed-in user (shabestari@gmail.com)
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[debug] [2025-10-25T15:45:17.755Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T15:45:17.756Z] > authorizing via signed-in user (shabestari@gmail.com)
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[debug] [2025-10-25T17:46:59.240Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T17:47:13.044Z] Running auto auth
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[error] Failed to fetch Firebase Project from Studio Workspace because WORKSPACE_SLUG environment variable is empty
+[debug] [2025-10-25T17:47:13.135Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/userinfo.email"]
+[debug] [2025-10-25T17:47:13.136Z] > authorizing via signed-in user (shabestari@gmail.com)
+[info] 
+=== Hosting Setup Actuation
+[debug] [2025-10-25T17:47:13.152Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/releases.json [none]
+[debug] [2025-10-25T17:47:13.201Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/releases.json 200
+[debug] [2025-10-25T17:47:13.202Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/releases.json {"current":{"version":"12.4.0","browserURL":"https://www.gstatic.com/firebasejs/12.4.0/firebase.js","packageURL":"https://www.gstatic.com/firebasejs/12.4.0/firebase.tgz"},"live":{"version":"12.4","browserURL":"https://www.gstatic.com/firebasejs/live/12.4/firebase.js","packageURL":"https://www.gstatic.com/firebasejs/live/12.4/firebase.tgz"},"components":{"ai":"https://www.gstatic.com/firebasejs/12.4.0/firebase-ai.js","analytics":"https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js","app":"https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js","app-check":"https://www.gstatic.com/firebasejs/12.4.0/firebase-app-check.js","auth":"https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js","auth/cordova":"https://www.gstatic.com/firebasejs/12.4.0/firebase-auth/cordova.js","auth/web-extension":"https://www.gstatic.com/firebasejs/12.4.0/firebase-auth/web-extension.js","functions":"https://www.gstatic.com/firebasejs/12.4.0/firebase-functions.js","firestore":"https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js","firestore/lite":"https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore/lite.js","installations":"https://www.gstatic.com/firebasejs/12.4.0/firebase-installations.js","storage":"https://www.gstatic.com/firebasejs/12.4.0/firebase-storage.js","performance":"https://www.gstatic.com/firebasejs/12.4.0/firebase-performance.js","remote-config":"https://www.gstatic.com/firebasejs/12.4.0/firebase-remote-config.js","messaging":"https://www.gstatic.com/firebasejs/12.4.0/firebase-messaging.js","messaging/sw":"https://www.gstatic.com/firebasejs/12.4.0/firebase-messaging/sw.js","database":"https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js","data-connect":"https://www.gstatic.com/firebasejs/12.4.0/firebase-data-connect.js","firestore.memory":"https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.memory.js"}}
+[info] ✔  Wrote .next/index.html 
+[info] ✔  Wrote configuration info to firebase.json 
+[info] ✔  Wrote project information to .firebaserc 

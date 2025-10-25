@@ -41,6 +41,12 @@ export default function Navbar() {
                   <Link href="/dashboard" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                     Dashboard
                   </Link>
+                  <Link href="/dashboard/financial-ratios" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                    Financial Ratios
+                  </Link>
+                  <Link href="/dashboard/library" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                    Library
+                  </Link>
                   <span className="text-gray-300">Hello, {user.email}</span>
                   <button onClick={handleSignOut} className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                     Sign out
@@ -89,6 +95,12 @@ export default function Navbar() {
                 </div>
                 <Link href="/dashboard" className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
                   Dashboard
+                </Link>
+                <Link href="/dashboard/financial-ratios" className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+                  Financial Ratios
+                </Link>
+                <Link href="/dashboard/library" className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+                  Library
                 </Link>
                 <button onClick={handleSignOut} className="w-full text-left text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
                   Sign out

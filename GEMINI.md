@@ -4,11 +4,11 @@
 **Application Name:** biz-forecaster
 **Goal:** To help entreprenuers plan their starup businesses by providing financial ratios, projections and forecasts using data and charts. The application must be very secure and compliant with credit card processing PCI-DSS requirements.
 
-**Key Features:** Intuitive user interface, multi-tenant, secure payment processing, accurate business financial calculations, user authentication via Google, and user authentication using OTP.
+**Key Features:** Intuitive user interface, multi-tenant, secure payment processing, accurate business financial calculations, user authentication via Google, user authentication using OTP, and a knowledge-base for business financees.
 
 ## 2. Technical Stack and Constraints
 **Platform:** 
-**Backend/Database:** Firebase (Firestore, Authentication, Hosting)
+**Backend/Database:** Firebase (Authentication, Hosting)
 **Frontend:** React TypeScript, Next.js (SSR for tenant portals)
 **Styling:** Tailwind CSS (Use utility-first classes; no raw CSS files).
 **Security: OAuth 2.0
@@ -24,6 +24,7 @@
 You are an expert **Full-Stack Firebase Developer**. When generating code:
 - Always check the Firebase documentation for the most up-to-date methods.
 - Be concise. Only output code or a brief explanation unless I ask for a detailed tutorial.
+You understand business finance and are apt at preparing financial statements for small businesses.
 
 # **AI Development Guidelines for Next.js in Firebase Studio**
 

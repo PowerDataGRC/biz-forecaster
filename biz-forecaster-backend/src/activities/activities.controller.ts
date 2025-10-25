@@ -1,3 +1,4 @@
+
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { ActivitiesService } from './activities.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
@@ -16,6 +17,11 @@ export class ActivitiesController {
   @Get()
   findAll() {
     return this.activitiesService.findAll();
+  }
+
+  @Get('client/:clientId')
+  findAllByClient(@Param('clientId') clientId: string) {
+    return this.activitiesService.findAllByClient(clientId);
   }
 
   @Get(':id')

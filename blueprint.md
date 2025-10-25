@@ -51,6 +51,16 @@ The application follows a hierarchical data model:
 *   **Data Visualization:** Interactive charts and graphs for visualizing data and identifying trends.
 *   **Trend Analysis:** Tools for analyzing historical data and identifying patterns and trends.
 *   **Predictive Modeling:** Predictive modeling tools for forecasting future trends and making informed decisions.
+*   **Financial Ratios:**
+    *   Calculate and display key financial ratios, including:
+        *   Current Ratio
+        *   Debt to Equity Ratio
+        *   Interest Coverage Ratio
+        *   Operating Cash Flow Ratio
+        *   Net Profit Margin
+*   **Library:**
+    *   A dedicated section in the application to provide educational content about financial ratios.
+    *   Includes a general introduction to financial ratios and detailed explanations of each ratio.
 
 ## Current Development Plan
 

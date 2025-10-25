@@ -1,0 +1,163 @@
+
+[
+  {
+    "planning-activities": [
+      { "activity": "Conduct Market Research",
+        "description": "Analyze competitors, target audience, and market demand.",
+        "weight": "10",
+        "progress": "0"
+      },
+    {
+      "activity": "Develop Business Plan",
+      "description": "Outline mission, vision, goals, strategies, and financial projections.",
+      "weight": "15",
+      "progress": "0"
+    },
+    {
+      "activity": "Secure Funding",
+      "description": "Determine capital needs and secure loans, investments, or personal funds.",
+      "weight": "10",
+      "progress": "0"
+    },
+    {
+      "activity": "Legal & Business Structure",
+      "description": "Register your business name, choose a legal structure (e.g., LLC, Corp).",
+      "weight": "10",
+      "progress": "0"
+    },
+    {
+      "activity": "Build Your Brand",
+      "description": "Design logo, website, and marketing materials.",
+      "weight": "10",
+      "progress": "0"
+    },
+    {
+      "activity": "Develop Product/Service",
+      "description": "Create and refine your core offering.",
+      "weight": "10",
+      "progress": "0"
+    },
+    {
+      "activity": "Set Up Operations & Logistics",
+      "description": "Establish supply chain, location, and operational workflows.",
+      "weight": "10",
+      "progress": "0"
+    },
+    {
+      "activity": "Develop Marketing & Sales Strategy",
+      "description": "Plan how you will reach and convert customers.",
+      "weight": "10",
+      "progress": "0"
+    },
+    {
+      "activity": "Hire Key Staff",
+      "description": "Recruit and onboard essential team members.",
+      "weight": "5",
+      "progress": "0"
+    },
+    {
+      "activity": "Prepare Operational & Privacy Policies",
+      "description": "SOPs, data/privacy, contracts, legal docs.",
+      "weight": "5",
+      "progress": "0"
+    }
+    ],
+    
+    "products-and-services": [
+        {
+        "description": "Widget 1", "price": 48.0, "sales_volume": 50,
+        "sales_volume_unit": "monthly"
+    },
+    {
+        "description": "Service 1",
+        "price": 0.0,
+        "sales_volume": 500,
+        "sales_volume_unit": "quarterly"
+    },
+    {
+        "description": "",
+        "price": 0.0,
+        "sales_volume": 0,
+        "sales_volume_unit": "monthly"
+    },
+    {
+        "description": "",
+        "price": 0.0,
+        "sales_volume": 0,
+        "sales_volume_unit": "monthly"
+    }
+      ],
+    "capital_expenses": [
+      {"item": "Office Furniture", "amount": 2500},
+      {"item": "Computer Equipment", "amount": 4000}
+    ],
+
+    "operating-expenses": [
+      {
+        "item": "Rent/Lease",
+        "amount": 1200.0,
+        "frequency": "monthly"
+    },
+    {
+        "item": "Salaries and Wages",
+        "amount": 5000.0,
+        "frequency": "monthly"
+    },
+    {
+        "item": "Utilities (Electricity, Water, Internet)",
+        "amount": 200.0,
+        "frequency": "monthly"
+    },
+    {
+        "item": "Marketing and Advertising",
+        "amount": 250.0,
+        "frequency": "monthly"
+    },
+    {
+        "item": "Software & Subscriptions",
+        "amount": 150.0,
+        "frequency": "monthly"
+    },
+    {
+        "item": "Insurance",
+        "amount": 200.0,
+        "frequency": "monthly"
+    },
+    {
+        "item": "Legal & Accounting",
+        "amount": 250.0,
+        "frequency": "monthly"
+    },
+    {
+        "item": "Office Supplies",
+        "amount": 100.0,
+        "frequency": "monthly"
+    }
+    ],
+    "cost_of_goods_sold": "650.00",
+    "seasonality": [
+      {"month": "January", "percentage": 10},
+      {"month": "June", "percentage": 20}
+    ],
+    "sales_projections": [
+      {"year": 2024, "projection": "75000"}
+    ],
+    "current_assets": [
+    { "cash & Equivalent": "15000",
+      "Inventory":5000
+    }
+    ],
+    "total_liabilities": [
+      {"Bank Loan": 20000},
+      {"Credit Card Debt": 1000}
+      ],
+    "total_debt": 0.0,
+    "total_equity": 0.0,
+    "ebitda": 25000,
+    "interest_expense": 0.0,
+    "operating_cash_flow": 0.0,
+    "net_profit": 0.0,
+    "total_revenue": 0.0,
+    "retained_earnings": 0.0
+  }
+]
