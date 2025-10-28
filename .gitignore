@@ -17,6 +17,18 @@
 /.next/
 /out/
 
+#firebase 
+firebase.json
+.firebaserc
+
+
+#GEMINI
+GEMINI.md
+
+#bluebrint
+blueprint.md
+ARCHITECTURE.md
+
 # production
 /build
 
