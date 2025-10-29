@@ -3,16 +3,16 @@ import { IsString, IsNotEmpty, IsUUID, IsNumber, IsEnum, IsOptional } from 'clas
 export class CreateCapitalExpenseDto {
   @IsUUID()
   @IsNotEmpty()
-  activity_id: string;
+  activity_id!: string;
 
   @IsString()
   @IsNotEmpty()
-  category: string;
+  category!: string;
 
   @IsString()
   @IsNotEmpty()
-  description: string;
+  description!: string;
 
   @IsNumber()
-  amount: number;
+  amount!: number;
 }

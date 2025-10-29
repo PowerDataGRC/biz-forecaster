@@ -1,14 +1,10 @@
-import { IsEnum, IsNotEmpty, IsUUID } from 'class-validator';
-import { PermissionLevel } from '../business-plan-collaborator.entity';
+import { IsEmail, IsEnum, IsNotEmpty } from 'class-validator';
+import { PermissionLevel } from './permission-level.enum';
 
 export class CreateCollaboratorDto {
-  @IsUUID()
+  @IsEmail()
   @IsNotEmpty()
-  plan_id: string;
-
-  @IsUUID()
-  @IsNotEmpty()
-  user_id: string;
+  email: string;
 
   @IsEnum(PermissionLevel)
   @IsNotEmpty()

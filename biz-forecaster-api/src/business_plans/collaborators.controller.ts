@@ -11,8 +11,12 @@ export class CollaboratorsController {
   constructor(private readonly collaboratorsService: CollaboratorsService) {}
 
   @Post()
-  create(@Body(ValidationPipe) createDto: CreateCollaboratorDto, @CurrentUser() user: DecodedIdToken) {
-    return this.collaboratorsService.create(createDto, user.uid);
+  create(
+    @Param('planId', ParseUUIDPipe) planId: string,
+    @Body(ValidationPipe) createDto: CreateCollaboratorDto,
+    @CurrentUser() user: DecodedIdToken,
+  ) {
+    return this.collaboratorsService.create(planId, createDto, user.uid);
   }
 
   @Get()

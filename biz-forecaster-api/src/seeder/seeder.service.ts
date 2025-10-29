@@ -2,9 +2,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Activity } from '../activity/activity.entity';
-import { Client } from '../client/client.entity';
-import * as sampleActivities from './sample-activities.json';
+import { Activity } from '../activities/activity.entity';
+import { Client } from '../clients/client.entity'; // Assuming Client entity is in this path
+import sampleActivities from './sample-activities.json';
 
 @Injectable()
 export class SeederService {
@@ -14,10 +14,16 @@ export class SeederService {
   ) {}
 
   async seedClientActivities(client: Client) {
-    const activitiesToSave = sampleActivities.map(activityData => {
+    // The JSON is an array with one object, which contains the 'planning-activities' array.
+    const planningActivitiesData = sampleActivities[0]['planning-activities'];
+
+    const activitiesToSave = planningActivitiesData.map(activityData => {
+      // Manually map the properties from the JSON to the Activity entity.
       return this.activityRepository.create({
-        ...(activityData as Partial<Activity>),
+        name: activityData.activity, // 'activity' from JSON maps to 'name' in the entity
+        description: activityData.description,
         client: client,
+        // You can add other default properties here if needed, e.g., status
       });
     });
 

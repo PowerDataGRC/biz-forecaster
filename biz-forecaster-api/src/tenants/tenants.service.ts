@@ -40,13 +40,35 @@ export class TenantsService {
       throw new ConflictException(`Tenant with subdomain "${subdomain}" already exists.`);
     }
 
-    const newTenant = this.tenantRepository.create(createTenantDto);
+    const { settings, ...restOfDto } = createTenantDto;
+    let parsedSettings = {};
+
+    // Safely parse the settings if it's a valid JSON string
+    if (settings && typeof settings === 'string') {
+      try {
+        parsedSettings = JSON.parse(settings);
+      } catch (error) {
+        throw new ConflictException(
+          'Invalid format for settings. Must be a valid JSON string.',
+        );
+      }
+    }
+
+    const newTenant = this.tenantRepository.create({
+      ...restOfDto,
+      settings: parsedSettings,
+    });
+
     const savedTenant = await this.tenantRepository.save(newTenant);
 
     // After successfully creating the tenant record, create its dedicated schema and tables.
     await this.createTenantSchema(savedTenant.subdomain);
 
     return savedTenant;
+  }
+
+  async findAll(): Promise<Tenant[]> {
+    return this.tenantRepository.find();
   }
 
   async findBySubdomain(subdomain: string): Promise<Tenant | null> {
@@ -120,8 +142,10 @@ export class TenantsService {
       this.logger.log(`Schema "${schemaName}" and tables created successfully.`);
     } catch (err) {
       await queryRunner.rollbackTransaction();
-      this.logger.error(`Failed to create schema for tenant ${schemaName}: ${err.message}`);
-      throw new Error(`Failed to create schema for tenant ${schemaName}: ${err.message}`);
+      // Type guard to safely access error properties
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      this.logger.error(`Failed to create schema for tenant ${schemaName}: ${errorMessage}`);
+      throw new Error(`Failed to create schema for tenant ${schemaName}: ${errorMessage}`);
     } finally {
       await queryRunner.release();
     }

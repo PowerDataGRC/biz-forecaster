@@ -3,47 +3,34 @@ import {
   Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
   UsePipes,
   ValidationPipe,
-  HttpCode,
-  HttpStatus,
+  UseGuards,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { FirebaseAuthGuard } from '../auth/firebase-auth.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
+import { DecodedIdToken } from 'firebase-admin/auth';
 
 @Controller('users')
+@UseGuards(FirebaseAuthGuard) // Protect all routes in this controller with Firebase Auth
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  create(@Body() createUserDto: CreateUserDto, @CurrentUser() firebaseUser: DecodedIdToken) {
+    // The service now requires the user ID to be passed explicitly.
+    return this.usersService.create(createUserDto, firebaseUser.uid);
   }
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
-  }
-
-  @Patch(':id')
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
-  }
-
-  @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+  @Get('profile')
+  getProfile(@CurrentUser() firebaseUser: DecodedIdToken) {
+    if (!firebaseUser) {
+      throw new UnauthorizedException();
+    }
+    return this.usersService.findOne(firebaseUser.uid);
   }
 }

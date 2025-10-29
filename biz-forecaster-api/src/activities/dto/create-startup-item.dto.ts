@@ -3,11 +3,11 @@ import { IsString, IsNotEmpty, IsUUID, IsOptional, IsBoolean } from 'class-valid
 export class CreateStartupItemDto {
   @IsUUID()
   @IsNotEmpty()
-  activity_id: string;
+  activity_id!: string;
 
   @IsString()
   @IsNotEmpty()
-  title: string;
+  title!: string;
 
   @IsString()
   @IsOptional()

@@ -24,19 +24,13 @@ export class UsersService {
     return this.usersRepository.findOneBy({ user_id: id });
   }
 
-  async create(createUserDto: CreateUserDto): Promise<Omit<User, 'password_hash'>> {
-    const { tenant_id, username, email, password, ...rest } = createUserDto;
+  async create(createUserDto: CreateUserDto, userId: string): Promise<Omit<User, 'password_hash'>> {
+    const { tenant_id, username, email, password, ...rest } = createUserDto; // tenant_id is unused but destructured to exclude it from rest
 
     // Check for existing user with the same email or username
     const existingUser = await this.usersRepository.findOne({ where: [{ email }, { username }] });
     if (existingUser) {
       throw new ConflictException('User with this email or username already exists.');
-    }
-
-    // Validate tenant
-    const tenant = await this.tenantRepository.findOneBy({ tenant_id });
-    if (!tenant) {
-      throw new NotFoundException(`Tenant with ID "${tenant_id}" not found.`);
     }
 
     // Hash password
@@ -45,10 +39,10 @@ export class UsersService {
 
     const newUser = this.usersRepository.create({
       ...rest,
+      user_id: userId, // Use the UID from Firebase
       username,
       email,
       password_hash,
-      tenant,
     });
 
     const savedUser = await this.usersRepository.save(newUser);

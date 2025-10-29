@@ -1,20 +1,38 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BusinessPlanCollaborator } from './business-plan-collaborator.entity';
 import { CreateCollaboratorDto } from './dto/create-collaborator.dto';
+import { User } from '../users/user.entity';
 
 @Injectable()
 export class CollaboratorsService {
   constructor(
     @InjectRepository(BusinessPlanCollaborator)
     private collaboratorsRepository: Repository<BusinessPlanCollaborator>,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
 
-  async create(createDto: CreateCollaboratorDto, invitedById: string): Promise<BusinessPlanCollaborator> {
+  async create(
+    planId: string,
+    createDto: CreateCollaboratorDto,
+    invitedById: string,
+  ): Promise<BusinessPlanCollaborator> {
+    const userToInvite = await this.usersRepository.findOneBy({ email: createDto.email });
+
+    if (!userToInvite) {
+      throw new NotFoundException(`User with email "${createDto.email}" not found.`);
+    }
+
+    const existingCollaborator = await this.collaboratorsRepository.findOneBy({ plan: { plan_id: planId }, user: { user_id: userToInvite.user_id } });
+    if (existingCollaborator) {
+      throw new ConflictException(`User "${createDto.email}" is already a collaborator on this plan.`);
+    }
+
     const collaborator = this.collaboratorsRepository.create({
-      plan: { plan_id: createDto.plan_id },
-      user: { user_id: createDto.user_id },
+      plan: { plan_id: planId },
+      user: { user_id: userToInvite.user_id },
       invited_by: { user_id: invitedById },
       permission_level: createDto.permission_level,
     });

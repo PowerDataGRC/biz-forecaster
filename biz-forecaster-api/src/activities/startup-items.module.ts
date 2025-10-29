@@ -4,7 +4,6 @@ import { StartupItemsService } from './startup-items.service';
 import { StartupItemsController } from './startup-items.controller';
 import { ActivityStartupItem } from './activity-startup-item.entity';
 
-@Module({})
 @Module({
   imports: [TypeOrmModule.forFeature([ActivityStartupItem])],
   controllers: [StartupItemsController],

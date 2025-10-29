@@ -1,62 +1,62 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Activity } from '../activities/activity.entity';
+import { BusinessPlan } from '../business_plans/business-plan.entity';
 
 @Injectable()
 export class FinancialRatiosService {
   constructor(
-    @InjectRepository(Activity)
-    private readonly activityRepository: Repository<Activity>,
+    @InjectRepository(BusinessPlan)
+    private readonly businessPlanRepository: Repository<BusinessPlan>,
   ) {}
 
-  async calculateCurrentRatio(activityId: string): Promise<number> {
-    const activity = await this.activityRepository.findOne({ where: { activity_id: activityId } });
+  async calculateCurrentRatio(planId: string): Promise<number | null> {
+    const businessPlan = await this.businessPlanRepository.findOne({ where: { plan_id: planId } });
 
-    if (!activity || !activity.current_assets || !activity.current_liabilities) {
+    if (!businessPlan || !businessPlan.current_assets || !businessPlan.current_liabilities) {
       return null;
     }
 
-    return activity.current_assets / activity.current_liabilities;
+    return businessPlan.current_assets / businessPlan.current_liabilities;
   }
 
-  async calculateDebtToEquityRatio(activityId: string): Promise<number> {
-    const activity = await this.activityRepository.findOne({ where: { activity_id: activityId } });
+  async calculateDebtToEquityRatio(planId: string): Promise<number | null> {
+    const businessPlan = await this.businessPlanRepository.findOne({ where: { plan_id: planId } });
 
-    if (!activity || !activity.total_debt || !activity.total_equity) {
+    if (!businessPlan || !businessPlan.total_debt || !businessPlan.total_equity) {
       return null;
     }
 
-    return activity.total_debt / activity.total_equity;
+    return businessPlan.total_debt / businessPlan.total_equity;
   }
 
-  async calculateInterestCoverageRatio(activityId: string): Promise<number> {
-    const activity = await this.activityRepository.findOne({ where: { activity_id: activityId } });
+  async calculateInterestCoverageRatio(planId: string): Promise<number | null> {
+    const businessPlan = await this.businessPlanRepository.findOne({ where: { plan_id: planId } });
 
-    if (!activity || !activity.ebitda || !activity.interest_expense) {
+    if (!businessPlan || !businessPlan.ebitda || !businessPlan.interest_expense) {
       return null;
     }
 
-    return activity.ebitda / activity.interest_expense;
+    return businessPlan.ebitda / businessPlan.interest_expense;
   }
 
-  async calculateOperatingCashFlowRatio(activityId: string): Promise<number> {
-    const activity = await this.activityRepository.findOne({ where: { activity_id: activityId } });
+  async calculateOperatingCashFlowRatio(planId: string): Promise<number | null> {
+    const businessPlan = await this.businessPlanRepository.findOne({ where: { plan_id: planId } });
 
-    if (!activity || !activity.operating_cash_flow || !activity.current_liabilities) {
+    if (!businessPlan || !businessPlan.operating_cash_flow || !businessPlan.current_liabilities) {
       return null;
     }
 
-    return activity.operating_cash_flow / activity.current_liabilities;
+    return businessPlan.operating_cash_flow / businessPlan.current_liabilities;
   }
 
-  async calculateNetProfitMargin(activityId: string): Promise<number> {
-    const activity = await this.activityRepository.findOne({ where: { activity_id: activityId } });
+  async calculateNetProfitMargin(planId: string): Promise<number | null> {
+    const businessPlan = await this.businessPlanRepository.findOne({ where: { plan_id: planId } });
 
-    if (!activity || !activity.net_profit || !activity.total_revenue) {
+    if (!businessPlan || !businessPlan.net_profit || !businessPlan.total_revenue) {
       return null;
     }
 
-    return (activity.net_profit / activity.total_revenue) * 100;
+    return (businessPlan.net_profit / businessPlan.total_revenue) * 100;
   }
 }

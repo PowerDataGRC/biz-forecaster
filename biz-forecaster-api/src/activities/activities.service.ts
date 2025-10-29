@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { Activity } from './activity.entity';
 import { Client } from '../clients/client.entity';
 import { Tenant } from '../tenants/tenant.entity';
+import { CreateActivityDto } from './dto/create-activity.dto';
+import { UpdateActivityDto } from './dto/update-activity.dto';
 
 @Injectable()
 export class ActivitiesService {
@@ -12,31 +14,31 @@ export class ActivitiesService {
     @InjectRepository(Activity)
     private readonly activityRepository: Repository<Activity>,
     @InjectRepository(Client)
-    private readonly clientRepository: Repository<Client>, // Assuming DTOs will be created
+    private readonly clientRepository: Repository<Client>,
     @InjectRepository(Tenant)
     private readonly tenantRepository: Repository<Tenant>,
   ) {}
 
-  async create(createActivityDto: any): Promise<Activity> {
-    const client = await this.clientRepository.findOne({ where: { client_id: createActivityDto.client_id } });
-    if (createActivityDto.client_id) {
-      if (!client) {
-        throw new NotFoundException(`Client with ID "${createActivityDto.client_id}" not found`);
-      }
+  async create(createActivityDto: CreateActivityDto): Promise<Activity> {
+    const { client_id, tenant_id, ...rest } = createActivityDto;
+
+    const client = await this.clientRepository.findOneBy({ client_id });
+    if (!client) {
+      throw new NotFoundException(`Client with ID "${client_id}" not found`);
     }
 
-    const tenant = await this.tenantRepository.findOne({ where: { tenant_id: createActivityDto.tenant_id } });
+    const tenant = await this.tenantRepository.findOneBy({ tenant_id });
     if (!tenant) {
-      throw new NotFoundException(`Tenant with ID "${createActivityDto.tenant_id}" not found`);
+      throw new NotFoundException(`Tenant with ID "${tenant_id}" not found`);
     }
 
-    const activity = this.activityRepository.create({
-      ...createActivityDto,
+    // Ensure we are creating a single entity object.
+    const newActivity = this.activityRepository.create({
+      ...rest,
       client,
       tenant,
     });
-
-    return this.activityRepository.save(activity);
+    return this.activityRepository.save(newActivity);
   }
 
   findAll(): Promise<Activity[]> {
@@ -55,21 +57,26 @@ export class ActivitiesService {
     return activity;
   }
 
-  async update(id: string, updateActivityDto: any): Promise<Activity> {
-    const activity = await this.findOne(id);
-    const { client_id, tenant_id, ...rest } = updateActivityDto;
+  async update(id: string, updateActivityDto: UpdateActivityDto): Promise<Activity> {
+    const { client_id, ...rest } = updateActivityDto;
+
+    // Preload finds the entity and applies the new values from the DTO.
+    const activity = await this.activityRepository.preload({
+      activity_id: id,
+      ...rest,
+    });
+
+    if (!activity) {
+      throw new NotFoundException(`Activity with ID "${id}" not found`);
+    }
 
     if (client_id) {
-      const client = await this.clientRepository.findOne({ where: { client_id } });
+      const client = await this.clientRepository.findOneBy({ client_id });
       if (!client) {
         throw new NotFoundException(`Client with ID "${client_id}" not found`);
       }
-      // This assumes client is a property on activity.
-      // Based on your entity, it seems correct.
-      Object.assign(activity, { client });
+      activity.client = client;
     }
-
-    Object.assign(activity, rest);
     return this.activityRepository.save(activity);
   }
 

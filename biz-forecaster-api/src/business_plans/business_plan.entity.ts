@@ -13,6 +13,10 @@ import { User } from '../users/user.entity';
 import { BusinessPlanTemplate } from './business-plan-template.entity';
 import { BusinessPlanSection } from './business-plan-section.entity';
 import { Report } from '../reports/report.entity';
+import { Kpi } from '../kpis/kpi.entity';
+import { Goal } from '../goals/goal.entity';
+import { Document } from 'src/documents/document.entity';
+
 
 export enum BusinessPlanStatus {
   DRAFT = 'draft',
@@ -68,4 +72,14 @@ export class BusinessPlan {
 
   @OneToMany(() => Report, (report) => report.business_plan)
   reports!: Report[];
+
+  @OneToMany(() => Kpi, (kpi) => kpi.business_plan)
+  kpis: Kpi[];
+
+  @OneToMany(() => Goal, (goal) => goal.business_plan)
+  goals: Goal[];
+
+  @OneToMany(() => Document, (document) => document.business_plan)
+  documents: Document[];
+
 }
