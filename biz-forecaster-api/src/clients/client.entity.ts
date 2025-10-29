@@ -5,7 +5,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Index,
+  ManyToOne,
 } from 'typeorm';
+import { User } from '../users/user.entity';
 
 @Entity('clients')
 @Index(['tenantSchema', 'id']) // Index for efficient lookups within a tenant
@@ -30,4 +32,8 @@ export class Client {
 
   @Column({ name: 'tenant_schema' })
   tenantSchema: string;
+
+  // This defines the inverse side of the relationship from the User entity.
+  @ManyToOne(() => User, (user) => user.clients)
+  user: User;
 }
