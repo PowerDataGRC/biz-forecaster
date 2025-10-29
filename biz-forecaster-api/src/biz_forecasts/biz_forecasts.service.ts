@@ -51,4 +51,11 @@ export class BizForecastsService {
     }
     return this.bizForecastRepository.save(bizForecast);
   }
+
+  async remove(id: string): Promise<void> {
+    const result = await this.bizForecastRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`BizForecast with ID "${id}" not found`);
+    }
+  }
 }
