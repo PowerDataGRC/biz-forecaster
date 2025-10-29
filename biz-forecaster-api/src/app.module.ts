@@ -15,6 +15,7 @@ import { BusinessPlansModule } from './business_plans/business-plans.module';
 import { ClientsModule } from './clients/clients.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { SeederModule } from './seeder/seeder.module';
+import { RegistrationModule } from './registration/registration.module';
 import { BusinessPlan } from './business_plans/business-plan.entity';
 import { Client } from './clients/client.entity';
 import { TenantMiddleware } from './tenants/tenant.middleware';
@@ -47,9 +48,10 @@ import { TenantContextService } from './tenants/tenant-context.service';
     ClientsModule,
     TenantsModule,
     SeederModule,
+    RegistrationModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, TenantContextService],
+  controllers: [AppController], // TenantContextService is now provided by TenantsModule
+  providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

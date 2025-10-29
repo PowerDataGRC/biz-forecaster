@@ -1,15 +1,27 @@
-import { Controller, Get, Post, Body, Param, Delete, UsePipes, ValidationPipe, Patch } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  ParseUUIDPipe,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ClientsService } from './clients.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
+import { FirebaseAuthGuard } from '../auth/firebase-auth.guard';
 
+@UseGuards(FirebaseAuthGuard) // Secure all endpoints in this controller
 @Controller('clients')
 export class ClientsController {
   constructor(private readonly clientsService: ClientsService) {}
 
   @Post()
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  create(@Body() createClientDto: CreateClientDto) {
+  create(@Body(new ValidationPipe()) createClientDto: CreateClientDto) {
     return this.clientsService.create(createClientDto);
   }
 
@@ -18,19 +30,21 @@ export class ClientsController {
     return this.clientsService.findAll();
   }
 
-  @Get(':client_id')
-  findOne(@Param('client_id') client_id: string) {
-    return this.clientsService.findOne(client_id);
+  @Get(':id')
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.clientsService.findOne(id);
   }
 
-  @Patch(':client_id')
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  update(@Param('client_id') client_id: string, @Body() updateClientDto: UpdateClientDto) {
-    return this.clientsService.update(client_id, updateClientDto);
+  @Patch(':id')
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body(new ValidationPipe()) updateClientDto: UpdateClientDto,
+  ) {
+    return this.clientsService.update(id, updateClientDto);
   }
 
-  @Delete(':client_id')
-  remove(@Param('client_id') client_id: string) {
-    return this.clientsService.remove(client_id);
+  @Delete(':id')
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.clientsService.remove(id);
   }
 }

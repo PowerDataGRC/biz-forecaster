@@ -1,17 +1,15 @@
-import { IsString, IsUUID, IsOptional, IsNotEmpty } from 'class-validator';
+import { IsString, IsEmail, IsOptional, IsNotEmpty } from 'class-validator';
 
 export class CreateClientDto {
-  @IsUUID()
-  user_id!: string;
-
-  @IsUUID()
-  tenant_id!: string;
-
   @IsString()
   @IsNotEmpty()
-  name!: string;
+  name: string;
+
+  @IsEmail()
+  @IsOptional()
+  email?: string;
 
   @IsString()
   @IsOptional()
-  business_type?: string;
+  phone?: string;
 }

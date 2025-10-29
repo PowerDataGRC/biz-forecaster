@@ -1,89 +1,170 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowRightIcon, ChartBarIcon, CurrencyDollarIcon, UsersIcon } from '@heroicons/react/24/solid';
+import { useRouter } from 'next/navigation';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../lib/firebase';
+import { useAuth } from '../context/AuthContext';
+import { useIsClient } from '../hooks/useIsClient';
+import { getFirebaseErrorMessage } from '../lib/firebaseErrors';
 
-export default function HomePage() {
+export default function AuthPage() {
+  const { user } = useAuth();
+  const isClient = useIsClient();
+  const [activeTab, setActiveTab] = useState('login');
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
+  const [registerData, setRegisterData] = useState({ email: '', password: '', confirmPassword: '' });
+  const [error, setError] = useState<string | null>(null); // State to hold error messages
+  const router = useRouter();
+
+
+  const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setLoginData(prevState => ({ ...prevState, [name]: value }));
+  };
+
+  const handleRegisterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setRegisterData(prevState => ({ ...prevState, [name]: value }));
+  };
+
+  const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null); // Clear previous errors
+    try {
+      await signInWithEmailAndPassword(auth, loginData.email, loginData.password);
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('Error signing in:', error);
+      setError(getFirebaseErrorMessage(error));
+    }
+  };
+
+  const handleRegisterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null); // Clear previous errors
+    if (registerData.password !== registerData.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+    try {
+      // 1. Create the user in Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, registerData.email, registerData.password);
+      const user = userCredential.user;
+      const token = await user.getIdToken();
+
+      // 2. Create the user in your own backend database
+      const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Send the Firebase token for authentication
+        },
+        body: JSON.stringify({
+          email: registerData.email,
+          password: registerData.password,
+          username: registerData.email, // Using email as username for now
+        }),
+      });
+
+      if (!apiResponse.ok) {
+        // If the API call fails, handle the error
+        const errorData = await apiResponse.json();
+        throw new Error(errorData.message || 'Failed to create user in backend.');
+      }
+
+      // 3. Redirect to the dashboard
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('Error creating user:', error);
+      setError(getFirebaseErrorMessage(error));
+    }
+  };
+
+  // This effect handles redirecting an already logged-in user.
+  useEffect(() => {
+    if (isClient && user) {
+      router.push('/dashboard');
+    }
+  }, [user, isClient, router]);
+
+  // Render a loading state or null on the server and initial client render to prevent hydration errors.
+  if (!isClient || user) {
+    return null; // Or a loading spinner component
+  }
+
   return (
-    <div className="bg-gray-900 text-white">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-gray-900 to-indigo-900">
-        <div className="container mx-auto px-6 py-32 text-center">
-          <h1 className="text-6xl font-extrabold leading-tight tracking-tight">Welcome to BizForecaster</h1>
-          <p className="mt-4 text-xl text-gray-300">Your ultimate solution for business forecasting and strategic planning.</p>
-          <Link href="/register" className="mt-8 inline-block bg-indigo-600 text-white font-semibold py-4 px-10 rounded-lg shadow-lg hover:bg-indigo-700 transition-colors">
-            Get Started for Free <ArrowRightIcon className="inline-block w-5 h-5 ml-2" />
-          </Link>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-6">
-          <h2 className="text-5xl font-bold text-center mb-16">Features</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="bg-gray-800 p-8 rounded-lg shadow-lg hover:shadow-2xl transition-shadow transform hover:-translate-y-2">
-              <div className="flex items-center justify-center h-16 w-16 bg-indigo-500 rounded-full mb-6">
-                <ChartBarIcon className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4">Accurate Forecasts</h3>
-              <p className="text-gray-400">Leverage advanced algorithms to get precise predictions for your business revenue, costs, and profits.</p>
-            </div>
-            <div className="bg-gray-800 p-8 rounded-lg shadow-lg hover:shadow-2xl transition-shadow transform hover:-translate-y-2">
-              <div className="flex items-center justify-center h-16 w-16 bg-green-500 rounded-full mb-6">
-                <CurrencyDollarIcon className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4">Insightful Analytics</h3>
-              <p className="text-gray-400">Visualize your financial data with interactive charts and dashboards to make informed decisions.</p>
-            </div>
-            <div className="bg-gray-800 p-8 rounded-lg shadow-lg hover:shadow-2xl transition-shadow transform hover:-translate-y-2">
-              <div className="flex items-center justify-center h-16 w-16 bg-purple-500 rounded-full mb-6">
-                <UsersIcon className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4">Collaborative Planning</h3>
-              <p className="text-gray-400">Work with your team in real-time to create and refine your business forecasts and strategic plans.</p>
-            </div>
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="max-w-md w-full mx-auto shadow-lg rounded-lg overflow-hidden">
+        <div className="bg-gray-800 px-4 py-5 sm:px-6">
+          <div className="flex border-b border-gray-700">
+            <button
+              onClick={() => setActiveTab('login')}
+              className={`w-1/2 py-3 text-center text-sm font-medium ${activeTab === 'login' ? 'border-b-2 border-indigo-500 text-white' : 'text-gray-400 hover:text-white'}`}>
+              Login
+            </button>
+            <button
+              onClick={() => setActiveTab('register')}
+              className={`w-1/2 py-3 text-center text-sm font-medium ${activeTab === 'register' ? 'border-b-2 border-indigo-500 text-white' : 'text-gray-400 hover:text-white'}`}>
+              Register
+            </button>
           </div>
         </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-20 bg-gray-800">
-        <div className="container mx-auto px-6">
-          <h2 className="text-5xl font-bold text-center mb-16">What Our Customers Say</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="bg-gray-900 p-8 rounded-lg shadow-lg">
-              <p className="text-gray-400 mb-6">"BizForecaster has transformed the way we do business. The accuracy of the forecasts is unparalleled, and the user-friendly interface makes it easy for our entire team to use."</p>
-              <div className="flex items-center">
-                <Image width="48" height="48" className="w-12 h-12 rounded-full mr-4" src="https://randomuser.me/api/portraits/women/68.jpg" alt="User avatar" />
-                <div>
-                  <p className="font-bold">Jane Doe</p>
-                  <p className="text-gray-500">CEO, Acme Inc.</p>
+        <div className="bg-gray-800 p-8">
+          {activeTab === 'login' && (
+            <form onSubmit={handleLoginSubmit} className="space-y-6">
+              <h2 className="text-2xl font-bold text-center text-white mb-6">Welcome Back!</h2>
+              <div>
+                <label htmlFor="login-email" className="block text-sm font-medium text-gray-300">Email address</label>
+                <input id="login-email" name="email" type="email" autoComplete="email" required value={loginData.email} onChange={handleLoginChange} className="appearance-none block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white" />
+              </div>
+              <div>
+                <label htmlFor="login-password" className="block text-sm font-medium text-gray-300">Password</label>
+                <input id="login-password" name="password" type="password" autoComplete="current-password" required value={loginData.password} onChange={handleLoginChange} className="appearance-none block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white" />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="text-sm">
+                  <Link href="#" className="font-medium text-indigo-400 hover:text-indigo-300">Forgot your password?</Link>
                 </div>
               </div>
-            </div>
-            <div className="bg-gray-900 p-8 rounded-lg shadow-lg">
-              <p className="text-gray-400 mb-6">"I can't imagine running our business without BizForecaster. It has become an indispensable tool for our strategic planning and financial forecasting."</p>
-              <div className="flex items-center">
-                <Image width="48" height="48" className="w-12 h-12 rounded-full mr-4" src="https://randomuser.me/api/portraits/men/32.jpg" alt="User avatar" />
-                <div>
-                  <p className="font-bold">John Smith</p>
-                  <p className="text-gray-500">CFO, Globex Corporation</p>
+              {error && activeTab === 'login' && (
+                <div className="text-red-400 text-sm text-center">
+                  {error}
                 </div>
+              )}
+              <div>
+                <button type="submit" className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Sign in</button>
               </div>
-            </div>
-          </div>
+            </form>
+          )}
+          {activeTab === 'register' && (
+            <form onSubmit={handleRegisterSubmit} className="space-y-6">
+              <h2 className="text-2xl font-bold text-center text-white mb-6">Create Your Account</h2>
+              <div>
+                <label htmlFor="register-email" className="block text-sm font-medium text-gray-300">Email address</label>
+                <input id="register-email" name="email" type="email" autoComplete="email" required value={registerData.email} onChange={handleRegisterChange} className="appearance-none block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white" />
+              </div>
+              <div>
+                <label htmlFor="register-password" className="block text-sm font-medium text-gray-300">Password</label>
+                <input id="register-password" name="password" type="password" autoComplete="new-password" required value={registerData.password} onChange={handleRegisterChange} className="appearance-none block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white" />
+              </div>
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300">Confirm Password</label>
+                <input id="confirmPassword" name="confirmPassword" type="password" autoComplete="new-password" required value={registerData.confirmPassword} onChange={handleRegisterChange} className="appearance-none block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white" />
+              </div>
+              {error && activeTab === 'register' && (
+                <div className="text-red-400 text-sm text-center">
+                  {error}
+                </div>
+              )}
+              <div>
+                <button type="submit" className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Sign up</button>
+              </div>
+            </form>
+          )}
         </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="bg-indigo-700">
-        <div className="container mx-auto px-6 py-24 text-center">
-          <h2 className="text-5xl font-bold mb-6">Ready to take control of your financial future?</h2>
-          <Link href="/register" className="bg-white text-indigo-700 font-semibold py-4 px-10 rounded-lg shadow-lg hover:bg-gray-100 transition-colors">
-            Sign Up Now
-          </Link>
-        </div>
-      </section>
+      </div>
     </div>
   );
 }

@@ -1,16 +1,15 @@
-import { IsString, IsOptional, IsEnum } from 'class-validator';
-import { ClientStatus } from '../client.entity';
+import { IsString, IsEmail, IsOptional } from 'class-validator';
 
 export class UpdateClientDto {
   @IsString()
   @IsOptional()
   name?: string;
 
+  @IsEmail()
+  @IsOptional()
+  email?: string;
+
   @IsString()
   @IsOptional()
-  business_type?: string;
-
-  @IsEnum(ClientStatus)
-  @IsOptional()
-  status?: ClientStatus;
+  phone?: string;
 }

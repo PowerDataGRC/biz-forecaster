@@ -2,18 +2,25 @@ import { Injectable, NotFoundException, ConflictException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import * as bcrypt from 'bcrypt';
-import { Tenant } from '../tenants/tenant.entity';
+import { TenantsService } from '../tenants/tenants.service';
+
+/**
+ * Defines the shape of the data needed to create a user
+ * from the registration service.
+ */
+interface CreateFromRegistrationParams {
+  email: string;
+  firebaseUid: string;
+  tenantId: string;
+}
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-    @InjectRepository(Tenant)
-    private readonly tenantRepository: Repository<Tenant>,
+    private readonly tenantsService: TenantsService, // Inject the service, not the repository
   ) {}
 
   findAll(): Promise<User[]> {
@@ -24,32 +31,37 @@ export class UsersService {
     return this.usersRepository.findOneBy({ user_id: id });
   }
 
-  async create(createUserDto: CreateUserDto, userId: string): Promise<Omit<User, 'password_hash'>> {
-    const { tenant_id, username, email, password, ...rest } = createUserDto; // tenant_id is unused but destructured to exclude it from rest
-
-    // Check for existing user with the same email or username
-    const existingUser = await this.usersRepository.findOne({ where: [{ email }, { username }] });
+  /**
+   * Creates a user record from the registration flow.
+   * This is called after the user has been created in Firebase.
+   */
+  async createFromRegistration(params: CreateFromRegistrationParams): Promise<User> {
+    // Check for existing user with the same email
+    const existingUser = await this.usersRepository.findOne({ where: { email: params.email } });
     if (existingUser) {
-      throw new ConflictException('User with this email or username already exists.');
+      // This is an important safeguard. If this happens, it means a user was created
+      // in Firebase, but a user with that email already exists in our database,
+      // which indicates an inconsistent state.
+      throw new ConflictException('User with this email already exists in the database.');
     }
 
-    // Hash password
-    const salt = await bcrypt.genSalt();
-    const password_hash = await bcrypt.hash(password, salt);
+    // 1. Find the tenant entity that this user belongs to.
+    const tenant = await this.tenantsService.findOne(params.tenantId);
+    if (!tenant) {
+      // This is a critical failure. The tenant created in the previous step was not found.
+      // This should not happen in a normal flow.
+      throw new NotFoundException(`Tenant with ID "${params.tenantId}" not found.`);
+    }
 
+    // 2. Create the new user with the full tenant object.
     const newUser = this.usersRepository.create({
-      ...rest,
-      user_id: userId, // Use the UID from Firebase
-      username,
-      email,
-      password_hash,
+      user_id: params.firebaseUid,
+      email: params.email,
+      username: params.email, // Default username to email
+      tenant: tenant, // Assign the full tenant entity
     });
 
-    const savedUser = await this.usersRepository.save(newUser);
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password_hash: _, ...result } = savedUser;
-    return result;
+    return this.usersRepository.save(newUser);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {

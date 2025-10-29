@@ -9,7 +9,7 @@ export class FirebaseService implements OnModuleInit {
     const encodedServiceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64;
 
     if (!encodedServiceAccount) {
-      this.logger.error('FIREBASE_SERVICE_ACCOUNT_BASE64 is not set.');
+      this.logger.error('FIREBASE_SERVICE_ACCOUNT_JSON is not set.');
       throw new Error('Firebase Admin SDK service account is not configured.');
     }
 

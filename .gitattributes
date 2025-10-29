@@ -1,0 +1,10 @@
+# Set the default behavior for all text files.
+# Git will normalize line endings to LF on commit and convert to CRLF on checkout on Windows.
+* text=auto
+
+# Explicitly force LF line endings for shell scripts, as they require it to run correctly
+# in Unix-like environments (like Git Bash, WSL, or CI/CD runners).
+*.sh text eol=lf
+*.bash text eol=lf
+
+# For any other file types that must have a specific line ending, add them here.
