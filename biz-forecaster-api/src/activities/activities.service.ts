@@ -22,7 +22,7 @@ export class ActivitiesService {
   async create(createActivityDto: CreateActivityDto): Promise<Activity> {
     const { client_id, tenant_id, ...rest } = createActivityDto;
 
-    const client = await this.clientRepository.findOneBy({ client_id });
+    const client = await this.clientRepository.findOneBy({ id: client_id });
     if (!client) {
       throw new NotFoundException(`Client with ID "${client_id}" not found`);
     }
@@ -46,7 +46,7 @@ export class ActivitiesService {
   }
 
   async findAllByClient(clientId: string): Promise<Activity[]> {
-    return this.activityRepository.find({ where: { client: { client_id: clientId } }, relations: ['client', 'tenant'] });
+    return this.activityRepository.find({ where: { client: { id: clientId } }, relations: ['client', 'tenant'] });
   }
 
   async findOne(id: string): Promise<Activity> {
@@ -71,7 +71,7 @@ export class ActivitiesService {
     }
 
     if (client_id) {
-      const client = await this.clientRepository.findOneBy({ client_id });
+      const client = await this.clientRepository.findOneBy({ id: client_id });
       if (!client) {
         throw new NotFoundException(`Client with ID "${client_id}" not found`);
       }

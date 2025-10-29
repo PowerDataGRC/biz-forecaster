@@ -19,13 +19,6 @@ import { DecodedIdToken } from 'firebase-admin/auth';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  create(@Body() createUserDto: CreateUserDto, @CurrentUser() firebaseUser: DecodedIdToken) {
-    // The service now requires the user ID to be passed explicitly.
-    return this.usersService.create(createUserDto, firebaseUser.uid);
-  }
-
   @Get('profile')
   getProfile(@CurrentUser() firebaseUser: DecodedIdToken) {
     if (!firebaseUser) {

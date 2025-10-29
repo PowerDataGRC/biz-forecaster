@@ -40,23 +40,9 @@ export class TenantsService {
       throw new ConflictException(`Tenant with subdomain "${subdomain}" already exists.`);
     }
 
-    const { settings, ...restOfDto } = createTenantDto;
-    let parsedSettings = {};
-
-    // Safely parse the settings if it's a valid JSON string
-    if (settings && typeof settings === 'string') {
-      try {
-        parsedSettings = JSON.parse(settings);
-      } catch (error) {
-        throw new ConflictException(
-          'Invalid format for settings. Must be a valid JSON string.',
-        );
-      }
-    }
-
     const newTenant = this.tenantRepository.create({
-      ...restOfDto,
-      settings: parsedSettings,
+      name: createTenantDto.name,
+      subdomain: createTenantDto.subdomain,
     });
 
     const savedTenant = await this.tenantRepository.save(newTenant);

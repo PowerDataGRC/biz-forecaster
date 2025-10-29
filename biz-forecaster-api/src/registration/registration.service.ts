@@ -33,7 +33,7 @@ export class RegistrationService {
     const user = await this.usersService.createFromRegistration({
       email: firebaseUser.email,
       firebaseUid: firebaseUser.uid,
-      tenantId: tenant.id,
+      tenantId: tenant.tenant_id,
     });
 
     return { tenant, user };
