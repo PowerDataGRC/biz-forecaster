@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Activity } from '../activities/activity.entity';
-import { Client } from '../clients/client.entity'; // Assuming Client entity is in this path
-import sampleActivities from './sample-activities.json';
+import { Client } from '../clients/client.entity';
+import * as sampleActivities from './sample-activities.json';
 
 @Injectable()
 export class SeederService {

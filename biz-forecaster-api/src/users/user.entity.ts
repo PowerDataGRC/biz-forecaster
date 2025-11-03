@@ -1,13 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 // import { BaseEntity } from '../shared/base.entity'; // Assuming this contains created_at and updated_at
 import { Tenant } from '../tenants/tenant.entity';
 import { Location } from '../locations/location.entity';
-import { AuditLog } from '../audit_logs/audit_log.entity';
-import { Client } from '../clients/client.entity';
-import { Notification } from '../notifications/notification.entity';
-import { Report } from '../reports/report.entity';
-import { Task } from '../tasks/task.entity';
-import { BizForecast } from '../biz_forecasts/biz_forecast.entity';
+
 
 export enum UserRole {
     ADMIN = 'admin',
@@ -23,39 +18,49 @@ export enum UserStatus {
 
 @Entity('users')
 export class User {
-    @PrimaryGeneratedColumn('uuid')
+    // This must be a PrimaryColumn, not a generated one, because we are using
+    // the UID from Firebase Authentication as the user's unique identifier.
+    @PrimaryColumn()
     user_id!: string;
 
-    @ManyToOne(() => Tenant, tenant => tenant.users)
+    // Each user belongs to a tenant (public schema relation). This column
+    // stores which tenant the user was created under.
+    @ManyToOne(() => Tenant, { nullable: false })
     @JoinColumn({ name: 'tenant_id' })
     tenant!: Tenant;
 
-    @ManyToOne(() => Location, location => location.users, { nullable: true })
+    @ManyToOne(() => Location, { nullable: true })
     @JoinColumn({ name: 'location_id' })
     location!: Location | null;
-
+    
+/***** this relationship creates circular dependency issues ***** 
     @OneToMany(() => Client, client => client.user)
     clients!: Client[];
+*/
 
+/*
+    // This relationship crosses from a public entity (User) to a tenant-specific entity (AuditLog)
+    // and causes startup errors. It must be removed from the public entity definition.
     @OneToMany(() => AuditLog, auditLog => auditLog.user)
     audit_logs!: AuditLog[];
+*/
 
+/* The following relationships are from a public entity (User) to private, tenant-specific
+   entities. They break the architectural separation and must be removed to prevent startup errors. */
+/*
     @OneToMany(() => BizForecast, bizForecast => bizForecast.user)
     biz_forecasts!: BizForecast[];
 
     @OneToMany(() => Notification, notification => notification.user)
     notifications!: Notification[];
-
-    @OneToMany(() => Report, report => report.generated_by)
-    reports!: Report[];
-
+ 
     @OneToMany(() => Task, task => task.assigned_to)
     tasks!: Task[];
-
-    @Column()
+*/
+    @Column({ nullable: true })
     first_name!: string;
 
-    @Column()
+    @Column({ nullable: true })
     last_name!: string;
 
     @Column({ unique: true })

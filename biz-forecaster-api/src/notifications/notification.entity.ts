@@ -7,7 +7,7 @@ export class Notification extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     notification_id: string;
 
-    @ManyToOne(() => User, user => user.notifications)
+    @ManyToOne(() => User)
     user: User;
 
     @Column()

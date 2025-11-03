@@ -17,7 +17,7 @@ export class Task extends BaseEntity {
     @ManyToOne(() => Goal, goal => goal.tasks)
     goal: Goal;
 
-    @ManyToOne(() => User, user => user.tasks, { nullable: true })
+    @ManyToOne(() => User, { nullable: true })
     assigned_to: User;
 
     @Column()

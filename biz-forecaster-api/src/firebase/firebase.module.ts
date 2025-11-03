@@ -1,32 +1,13 @@
 import { Module, Global } from '@nestjs/common';
-import * as admin from 'firebase-admin';
-import { ConfigService } from '@nestjs/config';
+import { FirebaseService } from './firebase.service';
 
-// Define a constant for the injection token
-export const FIREBASE_ADMIN = 'FIREBASE_ADMIN';
-
-const firebaseProvider = {
-  provide: FIREBASE_ADMIN,
-  useFactory: (configService: ConfigService) => {
-    const firebaseServiceAccount = configService.get<string>(
-      'FIREBASE_SERVICE_ACCOUNT_JSON',
-    );
-
-    if (!firebaseServiceAccount) {
-      throw new Error('FIREBASE_SERVICE_ACCOUNT_JSON is not set in .env file');
-    }
-
-    const serviceAccount = JSON.parse(firebaseServiceAccount);
-
-    return admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-    });
-  },
-  inject: [ConfigService],
-};
-
+// By marking this module as Global, the FirebaseService will be available
+// for injection across the entire application without needing to import FirebaseModule everywhere.
+@Global()
 @Module({
-  providers: [firebaseProvider],
-  exports: [firebaseProvider],
+  // The FirebaseService contains the correct onModuleInit logic to initialize Firebase.
+  // NestJS will automatically run this when the application starts.
+  providers: [FirebaseService],
+  exports: [FirebaseService], // Export if other modules need to inject it directly.
 })
 export class FirebaseModule {}

@@ -29,6 +29,83 @@ BizForecaster is a multi-tenant application. In addition to registering the user
 The function should take the tenantId and the admin's credentials (e.g., email, password).
 The user must be created within the specific tenant's user silo.
 
+
+3. User Initiates Registration from Frontend
+When a user clicks the "Sign Up" button on the register tab of app/page.tsx, a secure token is generated and sent to the user's email.
+Code Verification: \biz-forecaster\biz-forecaster-frontend\app\page.tsx. 
+The handleRegisterSubmit function does this.
+
+        * It captures the companyName, email, and password.
+        * It makes a POST request to the /registration/start backend endpoint.
+        * Upon a successful API response, it displays the message: Registration initiated. Please check your email for a verification link.
+
+4. Tenant and Schema Creation on the Backend
+Description: After the user verifies the token, the registration process continues by creating an isolated schema with a specific structure of tables and relationships.
+Code Verification: This is confirmed in the compiled backend service file biz-forecaster\biz-forecaster-api\dist\tenants\tenants.service.js.
+
+1. Single Source of Truth (The Biggest Win): The synchronize: true option tells TypeORM to read the metadata from all the entity files you provided in the entities array. It then automatically generates the correct CREATE TABLE SQL based on your @Entity(), @Column(), and @ManyToOne() decorators. If you add a middle_name property to your User entity, you don't have to change anything else. The next time a tenant registers, this process will automatically include the new column.
+
+2. Elimination of Manual SQL Injection Risks: The old method relied on a regular expression (/^[a-z0-9-]+$/) to sanitize the schemaName. While effective, it's still a manual check. The new approach is inherently safer. The schema: schemaName option is passed to the TypeORM and the pg driver, which handle the quoting and context-switching securely. The ORM generates all the DDL (CREATE TABLE, etc.) itself, completely removing the risk of an injection vulnerability in the table or column definitions.
+
+3. Maintainability and Readability: The code is now dramatically simpler and more declarative. The createTenantSchema method's purpose is clear: "create a schema that matches our defined entities." All the complex, error-prone SQL logic is gone, delegated to the ORM which is designed and tested to do it correctly.
+
+4. Correctness and Type Safety: TypeORM correctly maps TypeScript types (string, number, Date, enum) to the appropriate PostgreSQL column types (VARCHAR, DECIMAL, TIMESTAMP, custom ENUM types). This prevents a whole class of bugs that can arise from manually writing incorrect CREATE TABLE statements.
+
+ The application handles this creation process entirely at runtime. The key file is biz-forecaster\biz-forecaster-api\dist\tenants\tenants.service.js.
+
+        * create method: When a new tenant is registered, this method is called.
+createTenantSchema method: Inside the create method, a call is made to createTenantSchema. This method contains a very large SQL script.
+        * CREATE SCHEMA command: The very first thing this script does is execute CREATE SCHEMA IF NOT EXISTS "${schemaName}";.
+This is the exact moment the database "learns" about the new tenant's schema. It's a runtime operation, not a pre-configured state. Immediately after, the same script creates all the necessary tables (locations, users, clients, etc.) inside that new schema.
+
+1. A user is created in Firebase.
+2. A Tenant record is created in the public schema.
+3. The createTenantSchema method successfully runs the large SQL script, creating the new schema (e.g., org-acm) and all the necessary tables within it. This is confirmed by the log: Schema "org-acm" and tables created successfully.
+4. The completeRegistration method then calls tenantsService.executeInTenant(...) to create the User record inside the new schema.
+5. Inside executeInTenant, it tries to get a repository for the User entity by calling queryRunner.manager.getRepository(User).
+
+
+**5. How the Application Validate that the database supports the incoming table structure.**
+
+Step 1: The Bootstrap Connection (in app.module.ts)
+When the NestJS application starts, *app.module.ts* establishes a primary database connection defined in app.module.ts. 
+
+This tells TypeORM that this main connection only needs to know about the Tenant entity. This connection's sole purpose is to interact with the public.tenants table to find out which tenants exist and what their schema names are.
+
+**Below is the complete list of entities that will be created as tables inside each new tenant's schema:**
+Module File	                 | Entity Provided
+----------------------------------------------------
+activities.module.ts	                |   Activity, ActivityCogs, ActivitySalesProjection
+activity-capital-expenses.module.ts     |	ActivityCapitalExpense
+activity-operational-expenses.module.ts |	ActivityOperationalExpense
+activity-products.module.ts	            |   ActivityProduct     
+activity-startup-items.module.ts	    |   ActivityStartupItem
+audit_logs.module.ts	                |   AuditLog
+biz_forecasts.module.ts	                |   BizForecast
+business-plans.module.ts	            |   BusinessPlan, BusinessPlanSection, BusinessPlanTemplate
+clients.module.ts	                    |   Client
+collaborators.module.ts	                |   BusinessPlanCollaborator
+comments.module.ts	                    |   BusinessPlanComment
+financial-ratios.module.ts	            |   FinancialRatio (Implicit)
+goals.module.ts	                        |   Goal
+kpis.module.ts	                        |   Kpi
+notifications.module.ts	                |   Notification
+reports.module.ts	                    |   Report (Implicit)
+startup-items.module.ts	                |   ActivityStartupItem
+tasks.module.ts	                        |   Task
+users.module.ts	                        |   User
+
+**Step 2: The Dynamic Tenant Connection (Handled by Middleware)**
+
+When a user makes an API request (e.g., to get their business plans), the following happens at runtime:
+
+1. A middleware (like the TenantMiddleware configured in your app.module.ts) intercepts the request.
+2. It identifies the tenant from the request (e.g., from a subdomain or a JWT token).
+3. It uses the bootstrap connection to query the public.tenants table and retrieve that tenant's specific schemaName.
+4. It then establishes a new, temporary, tenant-specific database connection. This new connection is configured to use the tenant's unique schema (e.g., SET search_path TO 'org_acme_corp').
+5. This tenant-specific connection is then used for the remainder of the request to query tables like business_plans, users, etc., which exist inside that tenant's schema.
+This is how the application bridges the gap. It doesn't assume a schema exists; it looks up the correct schema at the beginning of every request and creates a connection scoped to that schema. The success of this model relies on the guarantee that the tenants.service.js has already run and correctly created the schema and all its tables when the tenant was first registered.
+
 ## 3. Data Model
 
 The application follows a hierarchical data model:
@@ -36,7 +113,7 @@ The application follows a hierarchical data model:
 *   **Tenant:** The top-level entity, representing a company or organization.
     *   Each tenant is isolated, meaning a tenant's data is not accessible to other tenants.
     *   Tenant registration requires a validated secure token.
-    *   Each tenant's schema name contains 'ORG_' followed by the first three letters of the     *   company name. For example if the user enters Acme LLC., teh schema name wodl be ORG_ACM.
+    *   Each tenant's schema name contains 'ORG_' followed by the first three letters of the    company name. For example if the user enters Acme LLC., teh schema name wodl be ORG_ACM.
     *   If the company name contains space or special characters, a regex function needs to 
     *   handle that accordingly by removing spaces and special characters. If the sapce is 
     *   betwene the second and thirs charters of the companyname, the regex sould insert X in 
@@ -380,9 +457,20 @@ CREATE INDEX idx_activity_details_activity ON activity_capital_expenses(activity
 - **Security Page:** A dedicated page for managing security settings, including 2FA setup and recovery code generation.
 - **Styling:** The UI is built with Tailwind CSS, using a consistent dark theme and a utility-first approach for a clean and modern design. Components are designed to be responsive and accessible.
 
-## 9. Current Plan: Implementing Secure Registration
+## 9. User Experience
+  **Company Registration** 
+  * A user submits the registration form.
+  * The frontend calls the POST /register endpoint on the backend.
+  * The RegistrationService calls the TenantsService.
+  * The createTenantSchema method begins its atomic transaction.
+    * If it fails:
+    * The transaction is rolled back.
+    * A detailed error is logged to the server console for debugging.
+    * The InternalServerErrorException is thrown.
+    * NestJS catches this and sends a clean, user-friendly JSON error response to the frontend with a 500 status code:
 
-This section details the plan for the most recent set of changes, which was focused on implementing a secure registration flow with email verification.
+## 10. Current Plan: Implementing Secure Registration
+ * This section details the plan for the most recent set of changes, which was focused on implementing a secure registration flow with email verification.
 
 **Problem:** The registration process did not verify that a user owned the email they were signing up with, and it lacked a password confirmation field.
 
@@ -398,9 +486,13 @@ This section details the plan for the most recent set of changes, which was focu
     -   **File:** `src/app/login/page.tsx`
     -   **Action:** Redesigned the UI flow to display a confirmation message after registration, instructing the user to check their email and click the verification link. A new UI state (`verify-email`) was added to handle this.
 
-## 10. Project Outline
+## 11. Logging Module
+  * The nest-winston, winston, and winston-daily-rotate-file to the backend project. The last one is crucial for automatically managing log files so they don't grow indefinitely.
+  * A Logger Configuration: We will create a centralized configuration for winston that defines two transports:
+  * A console transport for easy viewing during local development.
+  * A daily rotating file transport that saves logs to a file, creating a new file each day and automatically deleting old ones.
 
-## 11. Style and Design
+## 12. Style and Design
 
 *   **Aesthetics:** Modern, clean, and professional. The UI will be visually balanced with clean spacing and polished styles.
 *   **Color Palette:** A vibrant and energetic color palette will be used to create a visually appealing experience. The primary colors will be shades of blue, with accents of green and orange.

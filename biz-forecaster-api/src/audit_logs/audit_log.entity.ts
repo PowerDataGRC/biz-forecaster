@@ -13,15 +13,17 @@ import { Tenant } from '../tenants/tenant.entity';
 export class AuditLog {
   @PrimaryGeneratedColumn('uuid')
   audit_id!: string;
-
+/*
   @ManyToOne(() => Tenant)
   @JoinColumn({ name: 'tenant_id' })
   tenant!: Tenant;
+*/
 
-  @ManyToOne(() => User, (user) => user.audit_logs)
+  // This is a unidirectional relationship from a private entity (AuditLog) to a public one (User).
+  // The inverse side on the User entity is commented out to prevent startup errors.
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user!: User;
-
   @Column()
   action!: string;
 

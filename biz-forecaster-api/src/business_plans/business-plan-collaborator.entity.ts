@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
-import { BusinessPlan } from './business_plan.entity';
+import { BusinessPlan } from './business-plan.entity';
 import { User } from '../users/user.entity';
 import { PermissionLevel } from './dto/permission-level.enum';
 

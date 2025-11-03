@@ -2,9 +2,9 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
   JoinColumn,
   OneToMany,
 } from 'typeorm';
@@ -15,42 +15,42 @@ import { ActivitySalesProjection } from './activity-sales-projection.entity';
 @Entity('activity_products')
 export class ActivityProduct {
   @PrimaryGeneratedColumn('uuid')
-  product_id!: string;
+  product_id: string;
 
   @ManyToOne(() => Activity, (activity) => activity.products)
   @JoinColumn({ name: 'activity_id' })
-  activity!: Activity;
+  activity: Activity;
 
   @Column()
-  name!: string;
+  name: string;
 
-  @Column('text', { nullable: true })
-  description!: string | null;
-
-  @Column({ nullable: true })
-  sku!: string | null;
+  @Column({ type: 'text', nullable: true })
+  description: string;
 
   @Column({ nullable: true })
-  category!: string | null;
+  sku: string;
 
-  @Column('decimal', { precision: 15, scale: 2 })
-  price!: number;
+  @Column({ nullable: true })
+  category: string;
 
-  @Column('decimal', { precision: 15, scale: 2 })
-  cost!: number;
+  @Column('decimal', { precision: 15, scale: 2, nullable: true })
+  price: number;
 
-  @Column({ default: 'unit' })
-  unit!: string;
+  @Column('decimal', { precision: 15, scale: 2, nullable: true })
+  cost: number;
+
+  @Column({ nullable: true })
+  unit: string;
 
   @CreateDateColumn()
-  created_at!: Date;
+  created_at: Date;
 
   @UpdateDateColumn()
-  updated_at!: Date;
-
-  @OneToMany(() => ActivityCogs, (cogs) => cogs.product)
-  cogs!: ActivityCogs[];
+  updated_at: Date;
 
   @OneToMany(() => ActivitySalesProjection, (projection) => projection.product)
-  sales_projections!: ActivitySalesProjection[];
+  sales_projections: ActivitySalesProjection[];
+
+  @OneToMany(() => ActivityCogs, (cogs) => cogs.product)
+  cogs: ActivityCogs[];
 }

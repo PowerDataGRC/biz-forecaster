@@ -1,13 +1,13 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { BaseEntity } from '../shared/base.entity';
-import { BusinessPlan } from '../business_plans/business_plan.entity';
+import { BusinessPlan } from '../business_plans/business-plan.entity';
 
 @Entity('kpis')
 export class Kpi extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     kpi_id: string;
 
-    @ManyToOne(() => BusinessPlan, businessPlan => businessPlan.kpis)
+    @ManyToOne(() => BusinessPlan)
     business_plan: BusinessPlan;
 
     @Column()

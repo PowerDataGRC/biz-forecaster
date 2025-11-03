@@ -1,13 +1,22 @@
-import { Controller, Post, Body, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { RegistrationService } from './registration.service';
-import { RegisterDto } from './dto/register.dto';
+import { RegisterStartDto } from './dto/register-start.dto';
+import { RegisterCompleteDto } from './dto/register-complete.dto';
 
-@Controller('register')
+@Controller('registration')
 export class RegistrationController {
   constructor(private readonly registrationService: RegistrationService) {}
 
-  @Post()
-  async register(@Body(new ValidationPipe()) registerDto: RegisterDto) {
-    return this.registrationService.register(registerDto);
+  @Post('start')
+  @HttpCode(HttpStatus.OK)
+  async startRegistration(@Body() registerStartDto: RegisterStartDto) {
+    await this.registrationService.startRegistration(registerStartDto);
+    return { message: 'Verification email sent. Please check your inbox.' };
+  }
+
+  @Post('complete')
+  async completeRegistration(@Body() registerCompleteDto: RegisterCompleteDto) {
+    const result = await this.registrationService.completeRegistration(registerCompleteDto.token);
+    return result;
   }
 }

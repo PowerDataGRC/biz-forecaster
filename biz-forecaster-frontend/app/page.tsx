@@ -13,12 +13,13 @@ export default function AuthPage() {
   const { user } = useAuth();
   const isClient = useIsClient();
   const [activeTab, setActiveTab] = useState('login');
+  const [message, setMessage] = useState<string | null>(null); // For success/info messages
   const [loginData, setLoginData] = useState({ email: '', password: '' });
-  const [registerData, setRegisterData] = useState({ email: '', password: '', confirmPassword: '' });
+  const [registerData, setRegisterData] = useState({ companyName: '', email: '', password: '', confirmPassword: '' });
   const [error, setError] = useState<string | null>(null); // State to hold error messages
   const router = useRouter();
 
-
+  
   const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setLoginData(prevState => ({ ...prevState, [name]: value }));
@@ -32,6 +33,7 @@ export default function AuthPage() {
   const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null); // Clear previous errors
+    setMessage(null);
     try {
       await signInWithEmailAndPassword(auth, loginData.email, loginData.password);
       router.push('/dashboard');
@@ -44,41 +46,38 @@ export default function AuthPage() {
   const handleRegisterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null); // Clear previous errors
+    setMessage(null);
     if (registerData.password !== registerData.confirmPassword) {
-      alert("Passwords do not match");
+      setError("Passwords do not match");
       return;
     }
     try {
-      // 1. Create the user in Firebase Authentication
-      const userCredential = await createUserWithEmailAndPassword(auth, registerData.email, registerData.password);
-      const user = userCredential.user;
-      const token = await user.getIdToken();
-
-      // 2. Create the user in your own backend database
-      const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+      // 1. Call the backend to start the registration process
+      const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/registration/start`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Send the Firebase token for authentication
         },
         body: JSON.stringify({
+          companyName: registerData.companyName,
           email: registerData.email,
           password: registerData.password,
-          username: registerData.email, // Using email as username for now
         }),
       });
 
       if (!apiResponse.ok) {
-        // If the API call fails, handle the error
         const errorData = await apiResponse.json();
-        throw new Error(errorData.message || 'Failed to create user in backend.');
+        throw new Error(errorData.message || 'Failed to start registration.');
       }
-
-      // 3. Redirect to the dashboard
-      router.push('/dashboard');
+      setMessage('Registration initiated. Please check your email for a verification link.');
     } catch (error) {
-      console.error('Error creating user:', error);
-      setError(getFirebaseErrorMessage(error));
+      console.error('Registration failed:', error);
+      // The error from a failed fetch will have a message property.
+      // This will now display "Could not send verification email..." if the email fails,
+      // or a generic network error message for CORS/other issues.
+      setError(
+        error.message || 'An unexpected error occurred. Please check your network and try again.',
+      );
     }
   };
 
@@ -142,6 +141,10 @@ export default function AuthPage() {
             <form onSubmit={handleRegisterSubmit} className="space-y-6">
               <h2 className="text-2xl font-bold text-center text-white mb-6">Create Your Account</h2>
               <div>
+                <label htmlFor="register-companyName" className="block text-sm font-medium text-gray-300">Company Name</label>
+                <input id="register-companyName" name="companyName" type="text" autoComplete="organization" required value={registerData.companyName} onChange={handleRegisterChange} className="appearance-none block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white" />
+              </div>
+              <div>
                 <label htmlFor="register-email" className="block text-sm font-medium text-gray-300">Email address</label>
                 <input id="register-email" name="email" type="email" autoComplete="email" required value={registerData.email} onChange={handleRegisterChange} className="appearance-none block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white" />
               </div>
@@ -154,8 +157,18 @@ export default function AuthPage() {
                 <input id="confirmPassword" name="confirmPassword" type="password" autoComplete="new-password" required value={registerData.confirmPassword} onChange={handleRegisterChange} className="appearance-none block w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white" />
               </div>
               {error && activeTab === 'register' && (
-                <div className="text-red-400 text-sm text-center">
-                  {error}
+                <div className="relative rounded-md bg-red-900/20 p-4 text-sm text-red-400">
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      <p>{error}</p>
+                    </div>
+                    <button onClick={() => setError(null)} className="absolute top-1 right-1 p-1 text-red-400 hover:text-red-300">&times;</button>
+                  </div>
+                </div>
+              )}
+              {message && activeTab === 'register' && (
+                <div className="text-green-400 text-sm text-center">
+                  {message}
                 </div>
               )}
               <div>

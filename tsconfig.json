@@ -35,9 +35,11 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
+, "biz-forecaster-api/test/test-db.js"
   ],
   "exclude": [
     "node_modules",
-    "biz-forecaster-backend"
+    "biz-forecaster-backend",
+    "biz-forecaster-api"
   ]
 }

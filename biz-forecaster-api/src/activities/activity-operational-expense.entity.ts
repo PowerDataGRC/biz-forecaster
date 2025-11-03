@@ -2,8 +2,8 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
   ManyToOne,
+  CreateDateColumn,
   JoinColumn,
 } from 'typeorm';
 import { Activity } from './activity.entity';
@@ -20,30 +20,30 @@ export enum ExpenseFrequency {
 @Entity('activity_operational_expenses')
 export class ActivityOperationalExpense {
   @PrimaryGeneratedColumn('uuid')
-  expense_id!: string;
+  expense_id: string;
 
   @ManyToOne(() => Activity, (activity) => activity.operational_expenses)
   @JoinColumn({ name: 'activity_id' })
-  activity!: Activity;
+  activity: Activity;
 
-  @Column()
-  category!: string;
+  @Column({ nullable: true })
+  category: string;
 
-  @Column('text')
-  description!: string;
+  @Column({ type: 'text', nullable: true })
+  description: string;
 
-  @Column('decimal', { precision: 15, scale: 2 })
-  amount!: number;
+  @Column('decimal', { precision: 15, scale: 2, nullable: true })
+  amount: number;
 
-  @Column({ type: 'enum', enum: ExpenseFrequency })
-  frequency!: ExpenseFrequency;
-
-  @Column({ type: 'date' })
-  start_date!: string;
+  @Column({ type: 'enum', enum: ExpenseFrequency, nullable: true })
+  frequency: ExpenseFrequency;
 
   @Column({ type: 'date', nullable: true })
-  end_date!: string | null;
+  start_date: Date;
+
+  @Column({ type: 'date', nullable: true })
+  end_date: Date;
 
   @CreateDateColumn()
-  created_at!: Date;
+  created_at: Date;
 }

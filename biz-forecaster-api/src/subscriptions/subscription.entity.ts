@@ -1,38 +1,59 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from 'typeorm';
-import { BaseEntity } from '../shared/base.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
 import { Tenant } from '../tenants/tenant.entity';
 import { Invoice } from '../invoices/invoice.entity';
 
 export enum SubscriptionStatus {
-    ACTIVE = 'active',
-    CANCELED = 'canceled',
-    PAST_DUE = 'past_due',
+  ACTIVE = 'active',
+  PAUSED = 'paused',
+  CANCELED = 'canceled',
+  TRIAL = 'trial',
+}
+
+export enum SubscriptionPlan {
+  MONTHLY = 'monthly',
+  ANNUAL = 'annual',
 }
 
 @Entity('subscriptions')
-export class Subscription extends BaseEntity {
-    @PrimaryGeneratedColumn('uuid')
-    subscription_id: string;
+export class Subscription {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @OneToOne(() => Tenant, tenant => tenant.subscription)
-    tenant: Tenant;
+  // This establishes the one-to-one link.
+  // The @JoinColumn indicates that this table will hold the foreign key ('tenant_id').
 
-    @OneToMany(() => Invoice, invoice => invoice.subscription)
-    invoices: Invoice[];
+  @Column({
+    type: 'enum',
+    enum: SubscriptionPlan,
+    default: SubscriptionPlan.MONTHLY,
+  })
+  plan: SubscriptionPlan;
 
-    @Column()
-    plan_name: string;
+  @Column({
+    type: 'enum',
+    enum: SubscriptionStatus,
+    default: SubscriptionStatus.ACTIVE,
+  })
+  status: SubscriptionStatus;
 
-    @Column({ type: 'date' })
-    start_date: Date;
+  @Column({ name: 'next_renewal_date', type: 'timestamp with time zone' })
+  nextRenewalDate: Date;
 
-    @Column({ type: 'date' })
-    end_date: Date;
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
 
-    @Column({
-        type: 'enum',
-        enum: SubscriptionStatus,
-        default: SubscriptionStatus.ACTIVE,
-    })
-    status: SubscriptionStatus;
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
+
+//  @OneToMany(() => Invoice, (invoice) => invoice.subscription)
+//  invoices: Invoice[];
 }

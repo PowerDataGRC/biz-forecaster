@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ActivityCapitalExpense } from './activity-capital-expense.entity';
+import { ActivityCapitalExpense } from './capital-expense.entity';
 import { CreateCapitalExpenseDto } from './dto/create-capital-expense.dto';
 
 @Injectable()

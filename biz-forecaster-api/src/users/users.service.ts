@@ -20,7 +20,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-    private readonly tenantsService: TenantsService, // Inject the service, not the repository
+    private readonly tenantsService: TenantsService, // Standard injection now works
   ) {}
 
   findAll(): Promise<User[]> {
@@ -43,7 +43,7 @@ export class UsersService {
       // in Firebase, but a user with that email already exists in our database,
       // which indicates an inconsistent state.
       throw new ConflictException('User with this email already exists in the database.');
-    }
+  }
 
     // 1. Find the tenant entity that this user belongs to.
     const tenant = await this.tenantsService.findOne(params.tenantId);
@@ -58,10 +58,14 @@ export class UsersService {
       user_id: params.firebaseUid,
       email: params.email,
       username: params.email, // Default username to email
-      tenant: tenant, // Assign the full tenant entity
     });
 
-    return this.usersRepository.save(newUser);
+    const saved = await this.usersRepository.save(newUser);
+    // TypeORM's save can return the entity or an array; normalize to a single User
+    if (Array.isArray(saved)) {
+      return saved[0];
+    }
+    return saved;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
@@ -80,6 +84,6 @@ export class UsersService {
     const result = await this.usersRepository.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException(`User with ID "${id}" not found`);
-    }
   }
+}
 }

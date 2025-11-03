@@ -3,6 +3,10 @@ import { UserRole } from 'src/users/user.entity';
 
 export class CreateUserDto {
   @IsUUID()
+  @IsOptional() // Optional because it's only provided during registration
+  user_id?: string;
+
+  @IsUUID()
   tenant_id!: string;
 
   @IsString()
@@ -15,6 +19,10 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   password!: string; // Will be hashed in the service
+
+  @IsString()
+  @IsOptional()
+  password_hash?: string;
 
   @IsString()
   @IsNotEmpty()

@@ -16,7 +16,7 @@ export class BusinessPlanSection {
   @PrimaryGeneratedColumn('uuid')
   section_id!: string;
 
-  @ManyToOne(() => BusinessPlan, (plan) => plan.sections)
+  @ManyToOne(() => BusinessPlan)
   @JoinColumn({ name: 'plan_id' })
   plan!: BusinessPlan;
 

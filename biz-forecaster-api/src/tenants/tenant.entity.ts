@@ -6,10 +6,8 @@ import {
   UpdateDateColumn,
   OneToMany,
   OneToOne,
+  Index,
 } from 'typeorm';
-import { User } from '../users/user.entity';
-import { Subscription } from '../subscriptions/subscription.entity';
-
 
 export enum TenantStatus {
   ACTIVE = 'active',
@@ -28,12 +26,16 @@ export class Tenant {
   @Column({ unique: true })
   subdomain!: string;
 
+  @Column({ name: 'schema_name', unique: true })
+  @Index()
+  schemaName: string;
+
   @Column({
     type: 'enum',
     enum: TenantStatus,
     default: TenantStatus.ACTIVE,
   })
-  status!: TenantStatus;
+  status: TenantStatus;
 
   @Column({ type: 'jsonb', nullable: true })
   settings!: Record<string, any>;
@@ -43,10 +45,4 @@ export class Tenant {
 
   @UpdateDateColumn()
   updated_at!: Date;
-
-  @OneToMany(() => User, (user) => user.tenant)
-  users!: User[];
-
-  @OneToOne(() => Subscription, (subscription) => subscription.tenant)
-  subscription: Subscription;
 }

@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from '../shared/base.entity';
-import { Subscription } from '../subscriptions/subscription.entity';
 import { Payment } from '../payments/payment.entity';
 
 export enum InvoiceStatus {
@@ -14,8 +13,8 @@ export class Invoice extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     invoice_id: string;
 
-    @ManyToOne(() => Subscription, subscription => subscription.invoices)
-    subscription: Subscription;
+ //   @ManyToOne(() => Subscription, subscription => subscription.invoices)
+ //   subscription: Subscription;
 
     @OneToMany(() => Payment, payment => payment.invoice)
     payments: Payment[];

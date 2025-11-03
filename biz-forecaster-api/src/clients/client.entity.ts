@@ -4,36 +4,34 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  Index,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { User } from '../users/user.entity';
 
 @Entity('clients')
-@Index(['tenantSchema', 'id']) // Index for efficient lookups within a tenant
 export class Client {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  client_id!: string;
+
+  // The user this client is associated with.
+  // This is a relationship to a public entity from a tenant-specific one.
+  @ManyToOne(() => User, { nullable: false, eager: true })
+  @JoinColumn({ name: 'user_id' })
+  user!: User;
 
   @Column()
-  name: string;
+  name!: string;
+
+  @Column({ unique: true })
+  email!: string;
 
   @Column({ nullable: true })
-  email: string;
-
-  @Column({ nullable: true })
-  phone: string;
+  phone?: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
-
-  @Column({ name: 'tenant_schema' })
-  tenantSchema: string;
-
-  // This defines the inverse side of the relationship from the User entity.
-  @ManyToOne(() => User, (user) => user.clients)
-  user: User;
+  updated_at!: Date;
 }

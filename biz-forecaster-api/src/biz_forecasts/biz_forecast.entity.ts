@@ -15,6 +15,6 @@ export class BizForecast {
   @Column('json')
   data: Record<string, unknown>;
 
-  @ManyToOne(() => User, user => user.biz_forecasts)
+  @ManyToOne(() => User)
   user: User;
 }

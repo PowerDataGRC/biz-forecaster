@@ -1,41 +1,41 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { Invoice } from '../invoices/invoice.entity'; // Assuming this will be created
-
-export abstract class BaseEntity {
-  @CreateDateColumn()
-  created_at!: Date;
-
-  @UpdateDateColumn()
-  updated_at!: Date;
-}
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+} from 'typeorm';
+import { Invoice } from '../invoices/invoice.entity';
 
 export enum PaymentMethod {
-    CREDIT_CARD = 'credit_card',
-    BANK_TRANSFER = 'bank_transfer',
-    PAYPAL = 'paypal',
+  CREDIT_CARD = 'credit_card',
+  BANK_TRANSFER = 'bank_transfer',
+  PAYPAL = 'paypal',
+}
+
+export enum PaymentStatus {
+  COMPLETED = 'completed',
+  PENDING = 'pending',
+  FAILED = 'failed',
 }
 
 @Entity('payments')
-export class Payment extends BaseEntity {
-    @PrimaryGeneratedColumn('uuid')
-    payment_id!: string;
+export class Payment {
+  @PrimaryGeneratedColumn('uuid')
+  payment_id: string;
 
-    @ManyToOne(() => Invoice, invoice => invoice.payments)
-    invoice!: Invoice;
+  @ManyToOne(() => Invoice, (invoice) => invoice.payments)
+  invoice: Invoice;
 
-    @Column({ type: 'timestamp' })
-    payment_date!: Date;
+  @Column('decimal', { precision: 10, scale: 2 })
+  amount: number;
 
-    @Column('decimal', { precision: 10, scale: 2 })
-    amount!: number;
+  @Column({ type: 'enum', enum: PaymentMethod })
+  payment_method: PaymentMethod;
 
-    @Column({
-        type: 'enum',
-        enum: PaymentMethod,
-    })
-    payment_method!: PaymentMethod;
+  @Column({ type: 'enum', enum: PaymentStatus, default: PaymentStatus.PENDING })
+  status: PaymentStatus;
 
-    @Column()
-    transaction_id!: string;
+  @CreateDateColumn({ name: 'payment_date' })
+  payment_date: Date;
 }
