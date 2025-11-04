@@ -17,7 +17,6 @@ import { FirebaseAuthGuard } from '../auth/firebase-auth.guard';
 import { UpdateLocationDto } from './dto/update-location.dto';
 
 @Controller('locations')
-@UseGuards(FirebaseAuthGuard) // Protect all routes in this controller
 export class LocationsController {
   constructor(private readonly locationsService: LocationsService) {}
 

@@ -1,62 +1,54 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { BusinessPlan } from '../business_plans/business-plan.entity';
 
 @Injectable()
 export class FinancialRatiosService {
-  constructor(
-    @InjectRepository(BusinessPlan)
-    private readonly businessPlanRepository: Repository<BusinessPlan>,
-  ) {}
-
-  async calculateCurrentRatio(planId: string): Promise<number | null> {
-    const businessPlan = await this.businessPlanRepository.findOne({ where: { plan_id: planId } });
-
-    if (!businessPlan || !businessPlan.current_assets || !businessPlan.current_liabilities) {
+  calculateCurrentRatio(
+    currentAssets: number,
+    currentLiabilities: number,
+  ): number | null {
+    if (currentLiabilities === 0) {
       return null;
     }
-
-    return businessPlan.current_assets / businessPlan.current_liabilities;
+    return currentAssets / currentLiabilities;
   }
 
-  async calculateDebtToEquityRatio(planId: string): Promise<number | null> {
-    const businessPlan = await this.businessPlanRepository.findOne({ where: { plan_id: planId } });
-
-    if (!businessPlan || !businessPlan.total_debt || !businessPlan.total_equity) {
+  calculateDebtToEquityRatio(
+    totalDebt: number,
+    totalEquity: number,
+  ): number | null {
+    if (totalEquity === 0) {
       return null;
     }
-
-    return businessPlan.total_debt / businessPlan.total_equity;
+    return totalDebt / totalEquity;
   }
 
-  async calculateInterestCoverageRatio(planId: string): Promise<number | null> {
-    const businessPlan = await this.businessPlanRepository.findOne({ where: { plan_id: planId } });
-
-    if (!businessPlan || !businessPlan.ebitda || !businessPlan.interest_expense) {
+  calculateInterestCoverageRatio(
+    ebitda: number,
+    interestExpense: number,
+  ): number | null {
+    if (interestExpense === 0) {
       return null;
     }
-
-    return businessPlan.ebitda / businessPlan.interest_expense;
+    return ebitda / interestExpense;
   }
 
-  async calculateOperatingCashFlowRatio(planId: string): Promise<number | null> {
-    const businessPlan = await this.businessPlanRepository.findOne({ where: { plan_id: planId } });
-
-    if (!businessPlan || !businessPlan.operating_cash_flow || !businessPlan.current_liabilities) {
+  calculateNetProfitMargin(
+    netProfit: number,
+    totalRevenue: number,
+  ): number | null {
+    if (totalRevenue === 0) {
       return null;
     }
-
-    return businessPlan.operating_cash_flow / businessPlan.current_liabilities;
+    return (netProfit / totalRevenue) * 100;
   }
 
-  async calculateNetProfitMargin(planId: string): Promise<number | null> {
-    const businessPlan = await this.businessPlanRepository.findOne({ where: { plan_id: planId } });
-
-    if (!businessPlan || !businessPlan.net_profit || !businessPlan.total_revenue) {
+  calculateOperatingCashFlowRatio(
+    operatingCashFlow: number,
+    currentLiabilities: number,
+  ): number | null {
+    if (currentLiabilities === 0) {
       return null;
     }
-
-    return (businessPlan.net_profit / businessPlan.total_revenue) * 100;
+    return operatingCashFlow / currentLiabilities;
   }
 }

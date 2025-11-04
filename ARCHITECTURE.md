@@ -42,3 +42,33 @@ Biz-forecaster is a multi-tenant application. Registered tenants may have multip
 **[TECHNICAL IMPLEMENTATIONS]**
     **  The schema-factory.service.ts
     *  This file contains a single, focused service with one public method, generateSchemaName, that implements the specific naming rules.
+
+**[SQL Statement to Create the 'tenans' table]**
+-- Step 1: Ensure the UUID generation extension is available in the database.
+-- This only needs to be run once per database.
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Step 2: Define the custom ENUM type for the tenant status.
+-- This ensures data integrity for the 'status' column.
+CREATE TYPE "public"."tenants_status_enum" AS ENUM('active', 'suspended', 'inactive');
+
+-- Step 3: Create the 'tenants' table with all columns and constraints defined.
+-- This single statement replaces the previous CREATE and ALTER TABLE commands.
+CREATE TABLE "public"."tenants" (
+    "tenant_id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+    "name" character varying NOT NULL,
+    "subdomain" character varying NOT NULL,
+    "schema_name" character varying NOT NULL,
+    "status" "public"."tenants_status_enum" NOT NULL DEFAULT 'active',
+    "settings" jsonb,
+    "created_at" TIMESTAMP NOT NULL DEFAULT now(),
+    "updated_at" TIMESTAMP NOT NULL DEFAULT now(),
+    CONSTRAINT "PK_tenants_tenant_id" PRIMARY KEY ("tenant_id"),
+    CONSTRAINT "UQ_tenants_subdomain" UNIQUE ("subdomain"),
+    CONSTRAINT "UQ_tenants_schema_name" UNIQUE ("schema_name")
+);
+
+-- Step 4: Create an index on the 'schema_name' column for faster lookups.
+-- This is defined by the @Index() decorator in your entity.
+CREATE INDEX "IDX_tenants_schema_name" ON "public"."tenants" ("schema_name");
+

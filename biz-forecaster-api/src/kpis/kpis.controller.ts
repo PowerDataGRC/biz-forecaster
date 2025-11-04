@@ -3,7 +3,6 @@ import { FirebaseAuthGuard } from '../auth/firebase-auth.guard';
 import { KPIsService } from './kpis.service';
 
 @Controller('business-plans/:planId/kpis')
-@UseGuards(FirebaseAuthGuard)
 export class KPIsController {
   constructor(private readonly kpiService: KPIsService) {}
 

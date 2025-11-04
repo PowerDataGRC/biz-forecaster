@@ -24,10 +24,6 @@ export class BusinessPlan {
   @PrimaryGeneratedColumn('uuid')
   plan_id!: string;
 
-  @ManyToOne(() => Activity)
-  @JoinColumn({ name: 'activity_id' })
-  activity!: Activity;
-
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user!: User;

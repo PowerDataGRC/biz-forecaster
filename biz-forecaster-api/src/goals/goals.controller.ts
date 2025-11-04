@@ -3,7 +3,6 @@ import { FirebaseAuthGuard } from '../auth/firebase-auth.guard';
 import { GoalsService } from './goals.service';
 
 @Controller('business-plans/:planId/goals')
-@UseGuards(FirebaseAuthGuard)
 export class GoalsController {
   constructor(private readonly goalsService: GoalsService) {}
 

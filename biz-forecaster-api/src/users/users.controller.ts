@@ -9,13 +9,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { FirebaseAuthGuard } from '../auth/firebase-auth.guard';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { DecodedIdToken } from 'firebase-admin/auth';
 
 @Controller('users')
-@UseGuards(FirebaseAuthGuard) // Protect all routes in this controller with Firebase Auth
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

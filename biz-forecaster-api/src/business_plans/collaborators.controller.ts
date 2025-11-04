@@ -6,7 +6,6 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import { DecodedIdToken } from 'firebase-admin/auth';
 
 @Controller('business-plans/:planId/collaborators')
-@UseGuards(FirebaseAuthGuard)
 export class CollaboratorsController {
   constructor(private readonly collaboratorsService: CollaboratorsService) {}
 

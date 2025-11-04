@@ -7,13 +7,13 @@ export class FirebaseService implements OnModuleInit {
 
   onModuleInit() {
     // --- TEMPORARY DIAGNOSTIC ---
-    this.logger.warn('Firebase initialization is temporarily disabled for diagnostics.');
+  /*   this.logger.warn('Firebase initialization is temporarily disabled for diagnostics.');
     return;
 
     if (admin.apps.length > 0) {
       return;
     }
-
+ */
     this.logger.log('Initializing Firebase from FIREBASE_SERVICE_ACCOUNT_JSON...');
 
     try {

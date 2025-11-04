@@ -5,7 +5,6 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import { DecodedIdToken } from 'firebase-admin/auth';
 
 @Controller('notifications')
-@UseGuards(FirebaseAuthGuard)
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
 

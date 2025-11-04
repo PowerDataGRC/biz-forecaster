@@ -1,11 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BusinessPlan } from '../business_plans/business-plan.entity';
 import { FinancialRatiosService } from './financial-ratios.service';
+import { FinancialRatiosController } from './financial-ratios.controller';
+import { FinancialRatio } from './financial-ratio.entity';
+import { CommonModule } from '../common/common.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([BusinessPlan])],
+  imports: [TypeOrmModule.forFeature([FinancialRatio]), CommonModule],
   providers: [FinancialRatiosService],
+  controllers: [FinancialRatiosController],
   exports: [FinancialRatiosService],
 })
 export class FinancialRatiosModule {}

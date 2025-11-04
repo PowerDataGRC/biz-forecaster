@@ -11,7 +11,6 @@ import { Tenant } from './tenant.entity'; // Corrected import path
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { UpdateTenantDto } from './dto/update-tenant.dto'; // Assuming this DTO exists in the same folder
 import { SchemaFactoryService } from './schema-factory.service';
-import { User } from '../users/user.entity'; // Keep this for type safety in executeInTenant
 
 @Injectable()
 export class TenantsService {

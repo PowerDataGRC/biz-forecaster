@@ -35,7 +35,7 @@ export class RegistrationService {
     // Check if user already exists in Firebase
     try {
       await admin.auth().getUserByEmail(email);
-      throw new ConflictException('This email address is already in use by another account.');
+      throw new ConflictException('This email address is already in use.');
     } catch (error) {
       if (error.code === 'auth/user-not-found') {
         // This is the expected case, continue.
@@ -54,10 +54,8 @@ export class RegistrationService {
       secret: this.configService.get<string>('JWT_VERIFICATION_TOKEN_SECRET'),
     });
 
-    const verificationLink = `${this.configService.get<string>('FRONTEND_URL')}/register/verify?token=${token}`;
-
     // Send the verification email
-    await this.emailService.sendRegistrationEmail(email, verificationLink);
+    await this.emailService.sendRegistrationEmail(email, token);
   }
 
   async completeRegistration(token: string): Promise<{ message: string; tenantId: string }> {

@@ -3,7 +3,6 @@ import { ActivitiesService } from './activities.service';
 import { FirebaseAuthGuard } from '../auth/firebase-auth.guard';
 
 @Controller('activities')
-@UseGuards(FirebaseAuthGuard) // Protect all routes in this controller
 export class ActivitiesController {
   constructor(private readonly activitiesService: ActivitiesService) {}
 

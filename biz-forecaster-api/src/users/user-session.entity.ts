@@ -1,35 +1,25 @@
-import { Entity, 
-         PrimaryGeneratedColumn, 
-         Column, 
-         ManyToOne, 
-         JoinColumn, 
-         CreateDateColumn, 
-         Index } from 'typeorm';
-import { User } from './user.entity';
-import { Tenant } from '../tenants/tenant.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+} from 'typeorm';
+import { User } from '../users/user.entity';
 
 @Entity('user_sessions')
 export class UserSession {
   @PrimaryGeneratedColumn('uuid')
-  session_id!: string;
+  id: string;
 
-  @ManyToOne(() => User, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { nullable: false, eager: true }) // Eager load the user with the session
   @JoinColumn({ name: 'user_id' })
-  @Index()
-  user!: User;
+  user: User;
 
-  // This table lives in the public schema, so it needs a tenant_id
-  @ManyToOne(() => Tenant, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'tenant_id' })
-  @Index()
-  tenant!: Tenant;
-
-  @Column()
-  token_hash!: string;
-
-  @Column('timestamp')
-  expires_at!: Date;
+  @Column({ type: 'timestamp' })
+  expires_at: Date;
 
   @CreateDateColumn()
-  created_at!: Date;
+  created_at: Date;
 }

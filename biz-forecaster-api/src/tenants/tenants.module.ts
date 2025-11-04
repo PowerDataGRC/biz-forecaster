@@ -5,7 +5,7 @@ import { TenantsService } from './tenants.service';
 import { TenantsController } from './tenants.controller';
 import { TenantContextService } from './tenant-context.service';
 import { SchemaFactoryService } from './schema-factory.service';
-import { UsersModule } from '../users/users.module';
+
 
 @Module({
   imports: [

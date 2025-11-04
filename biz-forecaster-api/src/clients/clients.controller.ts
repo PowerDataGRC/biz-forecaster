@@ -13,9 +13,7 @@ import {
 import { ClientsService } from './clients.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
-import { FirebaseAuthGuard } from '../auth/firebase-auth.guard';
 
-@UseGuards(FirebaseAuthGuard) // Secure all endpoints in this controller
 @Controller('clients')
 export class ClientsController {
   constructor(private readonly clientsService: ClientsService) {}

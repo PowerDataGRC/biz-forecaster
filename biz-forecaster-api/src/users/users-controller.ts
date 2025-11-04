@@ -6,7 +6,6 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import { DecodedIdToken } from 'firebase-admin/auth';
 
 @Controller('users')
-@UseGuards(FirebaseAuthGuard) // Protect all routes in this controller with Firebase Auth Guard
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

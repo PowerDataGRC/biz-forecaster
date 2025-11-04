@@ -4,34 +4,24 @@ import { FinancialRatiosService } from './financial-ratios.service';
 @Controller('financial-ratios')
 export class FinancialRatiosController {
   constructor(private readonly financialRatiosService: FinancialRatiosService) {}
-
-  @Get('current-ratio/:activityId')
-  async getCurrentRatio(@Param('activityId') activityId: string) {
-    const currentRatio = await this.financialRatiosService.calculateCurrentRatio(activityId);
-    return { currentRatio };
-  }
-
-  @Get('debt-to-equity-ratio/:activityId')
-  async getDebtToEquityRatio(@Param('activityId') activityId: string) {
-    const debtToEquityRatio = await this.financialRatiosService.calculateDebtToEquityRatio(activityId);
-    return { debtToEquityRatio };
-  }
-
-  @Get('interest-coverage-ratio/:activityId')
-  async getInterestCoverageRatio(@Param('activityId') activityId: string) {
-    const interestCoverageRatio = await this.financialRatiosService.calculateInterestCoverageRatio(activityId);
-    return { interestCoverageRatio };
-  }
-
-  @Get('operating-cash-flow-ratio/:activityId')
-  async getOperatingCashFlowRatio(@Param('activityId') activityId: string) {
-    const operatingCashFlowRatio = await this.financialRatiosService.calculateOperatingCashFlowRatio(activityId);
-    return { operatingCashFlowRatio };
-  }
-
-  @Get('net-profit-margin/:activityId')
-  async getNetProfitMargin(@Param('activityId') activityId: string) {
-    const netProfitMargin = await this.financialRatiosService.calculateNetProfitMargin(activityId);
-    return { netProfitMargin };
-  }
+  // The logic for calculating and exposing financial ratios should now live
+  // in the BusinessPlans module, since the controller needs access to the
+  // BusinessPlansService to fetch the plan first.
+  //
+  // Example of how this would be used in BusinessPlansController:
+  //
+  // @Get(':planId/ratios/current-ratio')
+  // async getCurrentRatio(@Param('planId') planId: string) {
+  //   // 1. Use BusinessPlansService to fetch the plan
+  //   const businessPlan = await this.businessPlansService.findOne(planId);
+  //
+  //   // 2. Call the FinancialRatiosService with the specific data
+  //   const ratio = this.financialRatiosService.calculateCurrentRatio(
+  //     businessPlan.current_assets,
+  //     businessPlan.current_liabilities
+  //   );
+  //
+  //   // 3. Return the result
+  //   return { currentRatio: ratio };
+  // }
 }

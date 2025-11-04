@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { forwardRef, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
@@ -10,27 +10,21 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { RegistrationModule } from './registration/registration.module';
 import { TenantMiddleware } from './tenants/tenant.middleware';
 import { FirebaseModule } from './firebase/firebase.module'; // Ensure this is uncommented
-
 // Only import entities that live in the 'public' schema for the main connection
 import { Tenant } from './tenants/tenant.entity';
 import { Subscription } from './subscriptions/subscription.entity';
 import { ClientsModule } from './clients/clients.module';
 import { NotificationsModule } from './notifications/notifications.module';
-import { BizForecastsModule } from './biz_forecasts/biz_forecasts.module';
 import { AuditLogsModule } from './audit_logs/audit_logs.module';
-import { TasksModule } from './tasks/tasks.module';
 import { BusinessPlansModule } from './business_plans/business-plans.module';
 import { ActivitiesModule } from './activities/activities.module';
-import { ActivityOperationalExpensesModule } from './activities/activity-operational-expenses.module';
-import { ActivityProductsModule } from './activities/activity-products.module';
-import { CapitalExpensesModule } from './activities/capital-expenses.module';
-import { StartupItemsModule } from './activities/startup-items.module';
 import { CollaboratorsModule } from './business_plans/collaborators.module';
 import { UsersModule } from './users/users.module';
 import { KPIsModule } from './kpis/kpis.module';
 import { FinancialRatiosModule } from './financial-ratios/financial-ratios.module';
 import { ReportsModule } from './reports/reports.module';
 import { GoalsModule } from './goals/goals.module';
+import { TaggablesModule } from './taggables/taggables.module';
 
 
 
@@ -73,24 +67,18 @@ import { GoalsModule } from './goals/goals.module';
     SubscriptionsModule,
     // Tenant-specific modules. Importing them here makes their entities
     // available to the dataSource for schema synchronization.
-    AuditLogsModule,
-    ActivitiesModule,
-    ActivityOperationalExpensesModule,
-    ActivityProductsModule,
-    BusinessPlansModule,
-    BizForecastsModule,
-    CapitalExpensesModule,
+    AuditLogsModule,    
+    forwardRef(() => ActivitiesModule), // Use forwardRef to break circular dependencies
+    forwardRef(() => BusinessPlansModule), // Use forwardRef to break circular dependencies
     CollaboratorsModule,
     ClientsModule,
     FinancialRatiosModule,
     NotificationsModule,
-    StartupItemsModule,
-	  TasksModule, 
     UsersModule,
     KPIsModule,
 	  ReportsModule,
     GoalsModule,
-
+    TaggablesModule, // Add the new module
   ],
   controllers: [AppController], // TenantContextService is now provided by TenantsModule
   providers: [AppService],

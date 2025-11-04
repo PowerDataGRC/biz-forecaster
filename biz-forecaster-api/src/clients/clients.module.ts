@@ -1,15 +1,17 @@
-import { Module, UseGuards } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Client } from './client.entity';
 import { ClientsController } from './clients.controller';
 import { ClientsService } from './clients.service';
-import { User } from '../users/user.entity';
-import { TenantsModule } from '../tenants/tenants.module'; // Already correctly imported
-import { FirebaseModule } from '../firebase/firebase.module'; // Import the FirebaseModule
+import { TenantsModule } from '../tenants/tenants.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Client, User]), TenantsModule, FirebaseModule],
+  imports: [
+    TypeOrmModule.forFeature([Client]), // Only the Client entity is needed here
+    TenantsModule, // Import TenantsModule to make its providers available
+  ],
   controllers: [ClientsController],
   providers: [ClientsService],
+  exports: [ClientsService],
 })
 export class ClientsModule {}

@@ -18,7 +18,6 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import { DecodedIdToken } from 'firebase-admin/auth';
 
 @Controller('business-plans/:planId/comments')
-@UseGuards(FirebaseAuthGuard)
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 

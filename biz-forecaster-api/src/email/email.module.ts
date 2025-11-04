@@ -1,7 +1,6 @@
-// c:\Users\mshab\Documents\CodeRepository\biz-forecaster\biz-forecaster-api\src\email\email.module.ts
 import { Module } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
-const { HandlebarsAdapter } = require('@nestjs-modules/mailer/dist/adapters/handlebars.adapter');
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EmailService } from './email.service';
 import { join } from 'path';
@@ -24,9 +23,11 @@ import { join } from 'path';
           from: `"${configService.get<string>('SMTP_FROM_NAME', 'BizForecaster')}" <${configService.get<string>('SMTP_FROM')}>`,
         },
         template: {
-          // __dirname will resolve to the 'dist/email' folder at runtime.
-          dir: join(__dirname), // Corrected path to email templates
-          adapter: new HandlebarsAdapter(),
+          // This now correctly points to the 'templates' sub-directory.
+          dir: join(__dirname, 'templates'),
+          // Explicitly providing a helpers object can resolve subtle initialization issues.
+          // We pass an empty object as we don't have custom helpers.
+          adapter: new HandlebarsAdapter({}),
           options: {
             strict: true,
           },
