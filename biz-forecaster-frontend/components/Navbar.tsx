@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid';
 import { useAuth } from '../context/AuthContext';
 import { auth } from '../lib/firebase';
 import { signOut } from 'firebase/auth';
@@ -53,14 +52,10 @@ export default function Navbar() {
                   </button>
                 </>
               ) : (
-                <>
-                  <Link href="/login" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
-                    Login
-                  </Link>
-                  <Link href="/register" className="bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium">
-                    Sign Up
-                  </Link>
-                </>
+                // Intentionally hide Login/Sign Up from the top banner to avoid duplicate registration paths.
+                // The app's register/login routes remain available via the main "Register" tab on the landing page
+                // and the mobile menu below.
+                <></>
               )}
             </div>
           </div>
@@ -74,9 +69,9 @@ export default function Navbar() {
             >
               <span className="sr-only">Open main menu</span>
               {isOpen ? (
-                <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+                <span className="block h-6 w-6" aria-hidden="true">✕</span>
               ) : (
-                <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+                <span className="block h-6 w-6" aria-hidden="true">☰</span>
               )}
             </button>
           </div>

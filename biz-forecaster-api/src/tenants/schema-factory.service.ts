@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { QueryRunner } from 'typeorm';
 
 @Injectable()
 export class SchemaFactoryService {
@@ -37,6 +38,33 @@ export class SchemaFactoryService {
       baseName = baseName.substring(0, 2) + 'X';
     }
 
-    return `org-${baseName.toLowerCase()}`;
+    return `org_${baseName.toLowerCase()}`;
+  }
+
+  /**
+   * Creates the required tables in a tenant's schema
+   * @param queryRunner The TypeORM query runner to use
+   * @param schemaName The name of the schema to create tables in
+   */
+  async createTenantTables(queryRunner: QueryRunner, schemaName: string): Promise<void> {
+    try {
+      // Create users table
+      await queryRunner.query(`
+        CREATE TABLE "${schemaName}".users (
+          user_id UUID PRIMARY KEY,
+          email VARCHAR(255) NOT NULL UNIQUE,
+          username VARCHAR(255) NOT NULL,
+          password_hash VARCHAR(255) NOT NULL,
+          role VARCHAR(50) NOT NULL,
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+
+      // Add other tenant-specific tables here...
+
+    } catch (error) {
+      throw new Error(`Failed to create tenant tables: ${error.message}`);
+    }
   }
 }

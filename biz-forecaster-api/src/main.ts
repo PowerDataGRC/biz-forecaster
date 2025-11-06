@@ -1,8 +1,8 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { ConsoleLogger } from './console.logger';
-import { AllExceptionsFilter } from './common/database-error.filter';
+import { ConsoleLogger } from './core/logging/console.logger';
+import { AllExceptionsFilter } from './core/filters/database-error.filter';
 
 async function bootstrap() {
   // The FirebaseService uses onModuleInit to initialize, so we don't need to do it here.
@@ -36,11 +36,22 @@ const app = await NestFactory.create(AppModule, {
     allowedOrigins.push(frontendUrl);
   }
 
+  // Log CORS configuration
+  console.log('Configuring CORS with allowed origins:', allowedOrigins);
+  
   app.enableCors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      console.log('Incoming request from origin:', origin);
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        console.warn('Blocked request from unauthorized origin:', origin);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
-    allowedHeaders: 'Content-Type, Authorization',
+    allowedHeaders: 'Content-Type, Accept, Authorization',
   });
 
   await app.listen(3000);

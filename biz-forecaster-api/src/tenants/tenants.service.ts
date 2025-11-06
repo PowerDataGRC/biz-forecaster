@@ -86,19 +86,29 @@ export class TenantsService {
    * @param schemaName - The name of the schema to create (typically the tenant's subdomain).
    */
   private async createTenantSchema(schemaName: string): Promise<void> {
-    if (!/^[a-z0-9-]+$/.test(schemaName)) {
+    // Allow lowercase letters, numbers and underscores in schema names
+    if (!/^[a-z0-9_]+$/.test(schemaName)) {
       throw new Error(`Invalid schema name: ${schemaName}`);
     }
- 
+
     const queryRunner = this.dataSource.createQueryRunner();
     try {
       await queryRunner.connect();
       // Create the schema for the new tenant
       await queryRunner.createSchema(schemaName, true);
-      // Run migrations or synchronize the schema
-      await this.dataSource.synchronize();
-      // The `uuid-ossp` extension is required for uuid_generate_v4(). We run this after schema creation.
-      await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "${schemaName}"`);
+
+      // Ensure uuid extension is available before creating tables. Creating it in the
+      // public schema is safer for most hosted Postgres providers and avoids permission issues.
+      await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
+
+      // Set search path to the new schema
+      await queryRunner.query(`SET search_path TO "${schemaName}"`);
+
+      // Create tables in the new schema
+      await this.schemaFactory.createTenantTables(queryRunner, schemaName);
+
+      // Reset search path to public
+      await queryRunner.query(`SET search_path TO "public"`);
 
       this.logger.log(`Schema "${schemaName}" and tables created successfully.`);
     } catch (err) {
@@ -139,6 +149,30 @@ export class TenantsService {
     const result = await this.tenantRepository.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException(`Tenant with ID "${id}" not found`);
+    }
+  }
+
+  async findByUserEmail(email: string): Promise<Tenant | null> {
+    try {
+      // Query the public schema's users table to find the tenant
+      const result = await this.dataSource.query(
+        `SELECT t.* FROM public.tenants t 
+         INNER JOIN users u ON u.tenant_id = t.tenant_id 
+         WHERE u.email = $1 
+         LIMIT 1`,
+        [email]
+      );
+      
+      if (result && result.length > 0) {
+        return this.tenantRepository.create(result[0] as Partial<Tenant>);
+      }
+      return null;
+    } catch (error) {
+      this.logger.error('Failed to find tenant by user email', {
+        error: error.message,
+        email
+      });
+      return null;
     }
   }
 }

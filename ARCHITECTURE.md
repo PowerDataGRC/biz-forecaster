@@ -43,7 +43,12 @@ Biz-forecaster is a multi-tenant application. Registered tenants may have multip
     **  The schema-factory.service.ts
     *  This file contains a single, focused service with one public method, generateSchemaName, that implements the specific naming rules.
 
-**[SQL Statement to Create the 'tenans' table]**
+**[SQL Statement to Drop and Create the 'tenans' table]**
+
+-- Drop existing table and type if they exist to ensure a clean start
+DROP TABLE IF EXISTS "public"."tenants" CASCADE;
+DROP TYPE IF EXISTS "public"."tenants_status_enum";
+
 -- Step 1: Ensure the UUID generation extension is available in the database.
 -- This only needs to be run once per database.
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -53,7 +58,6 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TYPE "public"."tenants_status_enum" AS ENUM('active', 'suspended', 'inactive');
 
 -- Step 3: Create the 'tenants' table with all columns and constraints defined.
--- This single statement replaces the previous CREATE and ALTER TABLE commands.
 CREATE TABLE "public"."tenants" (
     "tenant_id" uuid NOT NULL DEFAULT uuid_generate_v4(),
     "name" character varying NOT NULL,
@@ -69,6 +73,57 @@ CREATE TABLE "public"."tenants" (
 );
 
 -- Step 4: Create an index on the 'schema_name' column for faster lookups.
--- This is defined by the @Index() decorator in your entity.
 CREATE INDEX "IDX_tenants_schema_name" ON "public"."tenants" ("schema_name");
+CREATE INDEX "IDX_tenants_schema_name" ON public.tenants ("schema_name");
 
+-- Step 4: Verify the tabel
+SELECT to_regclass('public.tenants');
+
+**Base64 ENcoding**
+* The Decoder 
+[System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes([IO.File]::ReadAllText("C:\PATH_TO_FILE\firebase-adminsdk.json"))) > firebaseSA-base64.txt
+
+The Encoder
+[System.IO.File]::WriteAllBytes("Path_to_decoded_file", [System.Convert]::FromBase64String("insert_jumpble_of_decoded_string_here"))
+
+
+**Test Cases**
+*Tsting the registraiton process
+    1. Test Scenario 1: Registering with an existing email
+    - Steps:
+        Open your browser to http://localhost:3000/register
+        Enter an email that you know already exists in Firebase
+        Enter any password
+        Click "Register"
+    - Expected Result:
+        Should see the error message: "This email address is already registered"
+        Should see a suggestion to log in
+        Should see a "Go to Login" button
+    2. Test Scenario 2: Invalid email format
+    - Steps:
+        Enter an invalid email (like "test@")
+        Enter any password
+        Click "Register"
+    - Expected Result:
+        Should see "Invalid email address" error
+    3. Test Scenario 3: Weak password
+    - Steps:
+        Enter a valid email
+        Enter a short password (less than 6 characters)
+        Click "Register"
+    - Expected Result:
+        Should see "Password is too weak" error
+        Should see suggestion about using at least 6 characters
+    4. Test Scenario 4: Successful registration
+    - Steps:
+        Enter a new, valid email
+        Enter a strong password (at least 6 characters)
+        Click "Register"
+    - Expected Result:
+        Should be redirected to the dashboard page
+        No errors should be shown
+For each test:
+
+Watch the browser's Network tab to see the API calls
+Check the browser's Console for any error messages
+Verify that the loading state works (button should show "Registering..." while processing)

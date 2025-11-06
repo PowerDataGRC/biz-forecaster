@@ -20,14 +20,12 @@ import { join } from 'path';
           },
         },
         defaults: {
-          from: `"${configService.get<string>('SMTP_FROM_NAME', 'BizForecaster')}" <${configService.get<string>('SMTP_FROM')}>`,
+          from: `"No Reply" <${configService.get<string>('SMTP_FROM_NAME', 'BizForecaster')}" <${configService.get<string>('SMTP_FROM')}>`,
         },
         template: {
           // This now correctly points to the 'templates' sub-directory.
-          dir: join(__dirname, 'templates'),
-          // Explicitly providing a helpers object can resolve subtle initialization issues.
-          // We pass an empty object as we don't have custom helpers.
-          adapter: new HandlebarsAdapter({}),
+          dir: join(process.cwd(),'dist/email/templates'),
+          adapter: new HandlebarsAdapter(),
           options: {
             strict: true,
           },

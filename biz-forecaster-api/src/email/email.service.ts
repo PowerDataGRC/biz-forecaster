@@ -26,8 +26,10 @@ export class EmailService {
         throw new InternalServerErrorException('Server configuration error.');
       }
 
-      const verificationLink = `${FRONTEND_URL}/auth/verify-email?token=${token}`;
+      const encodedToken = encodeURIComponent(token);
+      const verificationLink = `${FRONTEND_URL}/register/verify?token=${encodedToken}`;
       this.logger.log(`Sending registration verification email to: ${email}`);
+      this.logger.debug(`Generated verification link (token truncated): ${FRONTEND_URL}/register/verify?token=...${encodedToken.substring(encodedToken.length - 10)}`);
 
       // 2. Attempt to send the email.
       await this.mailerService.sendMail({
@@ -44,8 +46,8 @@ export class EmailService {
       // 3. Catch any error from the process and log it for debugging.
       this.logger.error(`Failed to send registration email to ${email}`, error.stack);
 
-      // 4. Throw a user-friendly exception that will be sent to the client.
-      throw new InternalServerErrorException('Could not send verification email. Please try signing up again in a few moments.');
+      // 4. Re-throw the original error to be caught by the global exception filter.
+      throw error;
     }
   }
 }

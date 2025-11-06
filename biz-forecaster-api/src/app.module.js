@@ -57,6 +57,21 @@ exports.AppModule = AppModule = __decorate([
                         entities: [tenant_entity_1.Tenant, subscription_entity_1.Subscription],
                         synchronize: false,
                         logging: 'all',
+                        // Add connection pool and retry settings
+                        poolSize: 20,
+                        connectTimeoutMS: 10000,
+                        extra: {
+                            // Retry configuration for connection attempts
+                            max: 20, // Maximum number of connections in the pool
+                            connectionTimeoutMillis: 10000,
+                            // Add retry logic for failed connections
+                            retry: {
+                                retries: 3,
+                                factor: 2,
+                                minTimeout: 1000,
+                                maxTimeout: 5000
+                            }
+                        }
                     };
                 },
                 inject: [config_1.ConfigService],

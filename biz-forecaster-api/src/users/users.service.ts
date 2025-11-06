@@ -58,14 +58,29 @@ export class UsersService {
       user_id: params.firebaseUid,
       email: params.email,
       username: params.email, // Default username to email
+      tenant: tenant,
     });
 
     const saved = await this.usersRepository.save(newUser);
-    // TypeORM's save can return the entity or an array; normalize to a single User
-    if (Array.isArray(saved)) {
-      return saved[0];
+    return Array.isArray(saved) ? saved[0] : saved;
+  }
+
+  async verifyEmail(token: string): Promise<User> {
+    const user = await this.usersRepository.findOne({ where: { verification_token: token } });
+
+    if (!user) {
+      throw new NotFoundException('User with this verification token not found.');
     }
-    return saved;
+
+    if (user.is_verified) {
+      // User is already verified, just return the user object.
+      return user;
+    }
+
+    user.is_verified = true;
+    user.verification_token = null; // Clear the token after verification
+
+    return this.usersRepository.save(user);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {

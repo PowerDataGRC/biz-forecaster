@@ -3,12 +3,12 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCxp6vs4Arb4YZgg5RGuA01rJWL8D45H5w",
-  authDomain: "business-forecaster-dc31f.firebaseapp.com",
-  projectId: "business-forecaster-dc31f",
-  storageBucket: "business-forecaster-dc31f.appspot.com",
-  messagingSenderId: "1046713946953",
-  appId: "1:1046713946953:web:54d3570e6e6ae2b98dc098",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase

@@ -17,6 +17,8 @@
 #firebase 
 firebase.json
 .firebaserc
+firebase-services-account.json
+
 
 #GEMINI
 GEMINI.md

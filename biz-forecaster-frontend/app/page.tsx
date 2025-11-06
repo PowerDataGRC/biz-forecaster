@@ -67,17 +67,21 @@ export default function AuthPage() {
 
       if (!apiResponse.ok) {
         const errorData = await apiResponse.json();
+        if (errorData.code === 'EMAIL_EXISTS') {
+          throw new Error('This email address is already registered. Please try logging in instead.');
+        }
         throw new Error(errorData.message || 'Failed to start registration.');
       }
       setMessage('Registration initiated. Please check your email for a verification link.');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration failed:', error);
-      // The error from a failed fetch will have a message property.
-      // This will now display "Could not send verification email..." if the email fails,
-      // or a generic network error message for CORS/other issues.
-      setError(
-        error.message || 'An unexpected error occurred. Please check your network and try again.',
-      );
+      if (error.message?.includes('already registered')) {
+        setError('This email is already registered. Please try logging in instead.');
+      } else {
+        setError(
+          error.message || 'An unexpected error occurred. Please check your network and try again.',
+        );
+      }
     }
   };
 
@@ -99,12 +103,12 @@ export default function AuthPage() {
         <div className="bg-gray-800 px-4 py-5 sm:px-6">
           <div className="flex border-b border-gray-700">
             <button
-              onClick={() => setActiveTab('login')}
+              onClick={() => router.push('/login')}
               className={`w-1/2 py-3 text-center text-sm font-medium ${activeTab === 'login' ? 'border-b-2 border-indigo-500 text-white' : 'text-gray-400 hover:text-white'}`}>
               Login
             </button>
             <button
-              onClick={() => setActiveTab('register')}
+              onClick={() => router.push('/register')}
               className={`w-1/2 py-3 text-center text-sm font-medium ${activeTab === 'register' ? 'border-b-2 border-indigo-500 text-white' : 'text-gray-400 hover:text-white'}`}>
               Register
             </button>
