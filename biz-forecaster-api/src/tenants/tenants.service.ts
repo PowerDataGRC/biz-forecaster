@@ -6,7 +6,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, DataSourceOptions } from 'typeorm';
+import { Repository, DataSource, DataSourceOptions, EntityMetadata } from 'typeorm';
 import { Tenant } from './tenant.entity'; // Corrected import path
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { UpdateTenantDto } from './dto/update-tenant.dto'; // Assuming this DTO exists in the same folder
@@ -19,7 +19,7 @@ export class TenantsService {
   constructor(
     @InjectRepository(Tenant)
     private readonly tenantRepository: Repository<Tenant>,
-    private readonly dataSource: DataSource, // Inject DataSource for raw queries
+    private readonly dataSource: DataSource, // Keep the DataSource private
     private readonly schemaFactory: SchemaFactoryService, // Inject the new factory
   ) {}
 
@@ -39,12 +39,22 @@ export class TenantsService {
     await queryRunner.connect();
     await queryRunner.query(`SET search_path TO "${schemaName}"`);
     try {
+      // Get a repository that is scoped to the query runner's transaction
       const repository = queryRunner.manager.getRepository(entity);
       return await operation(repository);
     } finally {
       await queryRunner.query(`SET search_path TO "public"`); // Reset search path
       await queryRunner.release();
     }
+  }
+
+  /**
+   * Safely exposes a way to get entity metadata without exposing the entire DataSource.
+   * @param entity The entity class or name.
+   * @returns The EntityMetadata for the given entity.
+   */
+  public getEntityMetadata(entity: Function | string): EntityMetadata {
+    return this.dataSource.getMetadata(entity);
   }
 
   async create(createTenantDto: CreateTenantDto): Promise<Tenant> {

@@ -1,5 +1,5 @@
-import { Controller, Post, Body, Req, ValidationPipe, Logger, BadRequestException, ConflictException, InternalServerErrorException } from '@nestjs/common';
-import { Request } from 'express';
+import { Controller, Post, Get, Body, Req, Res, Query, ValidationPipe, Logger, BadRequestException, ConflictException, InternalServerErrorException } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { RegistrationService } from './registration.service';
 import { RegisterStartDto } from './dto/register-start.dto';
 import { RegisterCompleteDto } from './dto/register-complete.dto';
@@ -35,47 +35,48 @@ export class RegistrationController {
     }
   }
 
-  // This endpoint now expects a POST request with a JSON body: { "token": "..." }
-  @Post('complete')
+  @Get('verify')
   async completeRegistration(
-    @Body(new ValidationPipe({
-      whitelist: true,
-      transform: true,
-      forbidNonWhitelisted: true
-    })) 
-    completeDto: RegisterCompleteDto,
-    @Req() req: Request
-  ): Promise<{ message: string; tenantId: string }> {
+    @Query(new ValidationPipe({ transform: true })) 
+    query: RegisterCompleteDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<void> {
     this.logger.log('Registration completion request received', { 
-      tokenLength: completeDto.token?.length,
-      tokenPrefix: completeDto.token?.substring(0, 10) + '...',
+      tokenLength: query.token?.length,
+      tokenPrefix: query.token?.substring(0, 10) + '...',
       origin: req.headers?.origin,
       host: req.headers?.host
     });
     
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+
     try {
-      const result = await this.registrationService.completeRegistration(completeDto.token);
+      const result = await this.registrationService.completeRegistration(query.token);
       this.logger.log('Registration completed successfully', { 
         tenantId: result.tenantId 
       });
-      return result;
+      // On success, redirect to a frontend page with a success status
+      res.redirect(`${frontendUrl}/auth/verified?status=success&tenantId=${result.tenantId}`);
     } catch (error) {
       this.logger.error('Registration completion failed', {
         errorName: error.name,
         errorMessage: error.message,
         stack: error.stack,
-        token: completeDto.token?.substring(0, 10) + '...'
+        token: query.token?.substring(0, 10) + '...'
       });
 
+      let errorCode = 'verification_failed';
       if (error.message.includes('Invalid token') || error.message.includes('Token expired')) {
-        throw new BadRequestException('Invalid or expired verification token. Please try registering again.');
+        errorCode = 'invalid_token';
       }
       
       if (error.message.includes('already exists')) {
-        throw new ConflictException('This account has already been registered.');
+        errorCode = 'already_verified';
       }
 
-      throw new BadRequestException(error.message || 'Verification failed. Please try again.');
+      // On failure, redirect to the frontend with an error code
+      res.redirect(`${frontendUrl}/auth/verified?status=error&code=${errorCode}`);
     }
   }
 }

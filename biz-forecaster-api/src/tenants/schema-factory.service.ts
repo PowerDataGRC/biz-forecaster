@@ -51,17 +51,43 @@ export class SchemaFactoryService {
       // Create users table
       await queryRunner.query(`
         CREATE TABLE "${schemaName}".users (
-          user_id UUID PRIMARY KEY,
+          user_id VARCHAR PRIMARY KEY,
+          first_name VARCHAR,
+          last_name VARCHAR,
+          username VARCHAR(255) NOT NULL UNIQUE,
           email VARCHAR(255) NOT NULL UNIQUE,
-          username VARCHAR(255) NOT NULL,
           password_hash VARCHAR(255) NOT NULL,
-          role VARCHAR(50) NOT NULL,
+          role VARCHAR(50) NOT NULL DEFAULT 'user',
+          status VARCHAR(50) NOT NULL DEFAULT 'active',
           created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
         );
       `);
 
       // Add other tenant-specific tables here...
+      await queryRunner.query(`
+        CREATE TABLE "${schemaName}".locations (
+          location_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          name VARCHAR(255) NOT NULL,
+          address VARCHAR(255),
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+
+      await queryRunner.query(`
+        CREATE TABLE "${schemaName}".clients (
+          client_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          name VARCHAR(255) NOT NULL,
+          email VARCHAR(255) UNIQUE,
+          phone VARCHAR(50),
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+
+      // Example for another table
+      // await queryRunner.query(`CREATE TABLE "${schemaName}".business_plans (...)`);
 
     } catch (error) {
       throw new Error(`Failed to create tenant tables: ${error.message}`);

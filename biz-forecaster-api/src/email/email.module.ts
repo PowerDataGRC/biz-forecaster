@@ -8,29 +8,37 @@ import { join } from 'path';
 @Module({
   imports: [
     MailerModule.forRootAsync({
-      imports: [ConfigModule], // Import ConfigModule to use ConfigService
-      useFactory: async (configService: ConfigService) => ({
-        transport: {
-          host: configService.get<string>('SMTP_HOST'),
-          port: configService.get<number>('SMTP_PORT'),
-          secure: configService.get<number>('SMTP_PORT') === 465, // Use true for port 465, false for others
-          auth: {
-            user: configService.get<string>('SMTP_USER'),
-            pass: configService.get<string>('SMTP_PASS'),
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        const isDevelopment = process.env.NODE_ENV !== 'production';
+        const templateDir = isDevelopment 
+          ? join(process.cwd(), 'src/email/templates')
+          : join(process.cwd(), 'dist/email/templates');
+          
+        return {
+          transport: {
+            host: configService.get<string>('SMTP_HOST'),
+            port: configService.get<number>('SMTP_PORT'),
+            secure: configService.get<number>('SMTP_PORT') === 465,
+            auth: {
+              user: configService.get<string>('SMTP_USER'),
+              pass: configService.get<string>('SMTP_PASS'),
+            },
+            debug: isDevelopment,
+            logger: isDevelopment,
           },
-        },
-        defaults: {
-          from: `"No Reply" <${configService.get<string>('SMTP_FROM_NAME', 'BizForecaster')}" <${configService.get<string>('SMTP_FROM')}>`,
-        },
-        template: {
-          // This now correctly points to the 'templates' sub-directory.
-          dir: join(process.cwd(),'dist/email/templates'),
-          adapter: new HandlebarsAdapter(),
-          options: {
-            strict: true,
+          defaults: {
+            from: `"BizForecaster" <${configService.get<string>('SMTP_FROM')}>`,
           },
-        },
-      }),
+          template: {
+            dir: templateDir,
+            adapter: new HandlebarsAdapter(),
+            options: {
+              strict: true,
+            },
+          },
+        };
+      },
       inject: [ConfigService],
     }),
   ],

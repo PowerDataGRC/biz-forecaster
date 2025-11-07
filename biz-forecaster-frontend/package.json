@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@mui/icons-material": "^7.3.5",
     "firebase": "^10.6.0",
     "next": "^14.0.3",
     "qrcode": "^1.5.3",

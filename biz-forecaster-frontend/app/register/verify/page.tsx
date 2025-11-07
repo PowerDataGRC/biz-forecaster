@@ -3,14 +3,10 @@ import VerificationComponent from './VerificationComponent';
 
 export default function VerifyPage() {
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center text-white">
-      <Suspense fallback={<Loading />}>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+      <Suspense fallback={<div>Loading...</div>}>
         <VerificationComponent />
       </Suspense>
     </div>
   );
-}
-
-function Loading() {
-  return <h2 className="text-2xl font-bold">Loading verification...</h2>;
 }

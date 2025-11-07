@@ -19,6 +19,12 @@ firebase.json
 .firebaserc
 firebase-services-account.json
 
+# Ignore compiled JS files inside the src directory
+biz-forecaster-api/src/**/*.js
+biz-forecaster-api/src/**/*.js.map
+
+# docs folder
+/docs/
 
 #GEMINI
 GEMINI.md

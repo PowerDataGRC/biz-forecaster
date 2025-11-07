@@ -14,10 +14,21 @@ export class TenantMiddleware implements NestMiddleware {
     const host = req.hostname;
     const subdomain = host.split('.')[0];
 
+    // --- DEBUG LINE ---
+    console.log(`[TenantMiddleware] Backend received request for host: "${host}", path: "${req.originalUrl}"`);
+
     // We assume the main app runs on a domain like 'biz-forecaster.com'
     // and tenants are on 'tenant1.biz-forecaster.com'.
-    // We will ignore common subdomains like 'www' or the root domain.
-    if (subdomain && subdomain !== 'www' && !req.path.startsWith('/api/tenants')) {
+    // We will ignore common subdomains like 'www' or the root domain,
+    // and also bypass for registration-related paths.
+    const shouldBypassTenantLookup = 
+      !subdomain || 
+      subdomain === 'www' || 
+      req.path.startsWith('/registration') || // Bypass for registration paths
+      req.path.startsWith('/api/register/check') || // Explicitly bypass the email check
+      req.path.startsWith('/api/tenants'); // Already existing bypass for tenants API
+
+    if (!shouldBypassTenantLookup) {
       const tenant = await this.tenantsService.findBySubdomain(subdomain);
       if (tenant) {
         this.tenantContext.schema = tenant.subdomain;

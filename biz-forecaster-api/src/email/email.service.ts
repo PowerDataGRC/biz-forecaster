@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
-import { User } from '../users/user.entity';
+import { join } from 'path';
 
 
 @Injectable()
@@ -18,36 +18,66 @@ export class EmailService {
 
   async sendRegistrationEmail(email: string, token: string): Promise<void> {
     try {
-      // 1. Check for the FRONTEND_URL environment variable first.
-      const FRONTEND_URL = process.env.FRONTEND_URL;
-      if (!FRONTEND_URL) {
-        // This is a configuration error, so we throw a specific error for the developer.
-        this.logger.error('FATAL: FRONTEND_URL environment variable is not set.');
-        throw new InternalServerErrorException('Server configuration error.');
-      }
+      // 1. Validate environment variables
+      const API_URL = process.env.NEXT_PUBLIC_API_URL;
+      const SMTP_HOST = process.env.SMTP_HOST;
+      const SMTP_PORT = process.env.SMTP_PORT;
+      const SMTP_USER = process.env.SMTP_USER;
 
-      const encodedToken = encodeURIComponent(token);
-      const verificationLink = `${FRONTEND_URL}/register/verify?token=${encodedToken}`;
-      this.logger.log(`Sending registration verification email to: ${email}`);
-      this.logger.debug(`Generated verification link (token truncated): ${FRONTEND_URL}/register/verify?token=...${encodedToken.substring(encodedToken.length - 10)}`);
-
-      // 2. Attempt to send the email.
-      await this.mailerService.sendMail({
-        to: email,
-        subject: 'Welcome to BizForecaster! Please Verify Your Email',
-        template: 'registration',
-        context: {
-          verificationLink: verificationLink,
-        },
+      this.logger.debug('Email configuration:', {
+        
+        SMTP_HOST,
+        SMTP_PORT,
+        SMTP_USER,
+        templateDir: join(process.cwd(), process.env.NODE_ENV === 'production' ? 'dist/email/templates' : 'src/email/templates')
       });
 
-      this.logger.log(`Successfully sent registration email to ${email}`);
-    } catch (error) {
-      // 3. Catch any error from the process and log it for debugging.
-      this.logger.error(`Failed to send registration email to ${email}`, error.stack);
+      if (!API_URL) {
+        this.logger.error('FATAL: API_URL environment variable is not set in the backend .env file.');
+        throw new InternalServerErrorException('Server configuration error: Missing API_URL.');
+      }
 
-      // 4. Re-throw the original error to be caught by the global exception filter.
+      // 2. Prepare email content
+      const verificationLink = `${API_URL}/registration/verify?token=${token}`;
+      
+      this.logger.log(`Preparing verification email for: ${email}`);
+      this.logger.debug('Email details:', {
+        to: email,
+        tokenLength: token.length,
+        tokenPreview: token.substring(0, 10) + '...' + token.substring(token.length - 10),
+        verificationLink: verificationLink.replace(token, '...TOKEN...')
+      });
+
+      // 3. Send the email
+      try {
+        const result = await this.mailerService.sendMail({
+          to: email,
+          subject: 'Welcome to BizForecaster! Please Verify Your Email',
+          template: 'registration',
+          context: {
+            verificationLink: verificationLink,
+          },
+        });
+
+        this.logger.log(`Email sent successfully to ${email}`, {
+          messageId: result?.messageId,
+          response: result?.response
+        });
+      } catch (emailError) {
+        this.logger.error(`Failed to send email to ${email}:`, {
+          error: emailError.message,
+          stack: emailError.stack,
+          code: emailError.code
+        });
+        throw new InternalServerErrorException('Failed to send verification email');
+      }
+    } catch (error) {
+      this.logger.error(`Error in registration email process for ${email}:`, {
+        error: error.message,
+        stack: error.stack
+      });
       throw error;
     }
+
   }
 }

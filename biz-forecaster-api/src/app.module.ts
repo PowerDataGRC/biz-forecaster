@@ -47,11 +47,10 @@ import { TaggablesModule } from './taggables/taggables.module';
           // Appending it to the URL is the most reliable way to configure SSL, and we remove
           // the separate `ssl` object to avoid potential conflicts in the driver.
           url: dbUrl.includes('sslmode') ? dbUrl : `${dbUrl}?sslmode=require`,
-          // The main connection MUST ONLY be aware of entities that exist exclusively
-          // in the 'public' schema and have NO relations to tenant-specific tables.
-          // User, Client, Location, etc., are tenant-specific and must be removed.
-          // This list should only contain entities that live in the public schema.
-          entities: [Tenant, Subscription],
+          // The main DataSource needs to be aware of ALL entities to provide metadata,
+          // even for tenant-specific tables. Using a glob pattern is the most robust way
+          // to ensure all entities are discovered automatically.
+          entities: [__dirname + '/**/*.entity{.ts,.js}'],
           synchronize: false, // Crucial for a migration-first approach.
           // --- Add Logging Configuration ---
           // 'all' logs everything. For production, you might prefer ['error', 'warn'].

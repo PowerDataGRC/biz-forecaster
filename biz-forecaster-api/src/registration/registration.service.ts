@@ -13,7 +13,7 @@ import * as admin from 'firebase-admin';
 import { TenantsService } from '../tenants/tenants.service';
 import { RegisterStartDto } from './dto/register-start.dto';
 import { EmailService } from '../email/email.service'; // We'll create this next
-import { User, UserRole } from '../users/user.entity';
+import { TenantUser } from '../users/tenant-user.entity';
 
 
 @Injectable()
@@ -25,8 +25,6 @@ export class RegistrationService {
     private readonly jwtService: JwtService,
     private readonly emailService: EmailService,
     private readonly configService: ConfigService,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
   ) {}
 
   async checkEmailAvailability(email: string): Promise<{ available: boolean }> {
@@ -59,7 +57,7 @@ export class RegistrationService {
   }
 
   async startRegistration(registerDto: RegisterStartDto): Promise<void> {
-    const { email, password, companyName } = registerDto;
+    const { email, password, companyName, firstName, lastName } = registerDto;
 
     // Check if user already exists in Firebase
     try {
@@ -96,7 +94,7 @@ export class RegistrationService {
     }
 
     // Generate a verification token
-    const payload = { email, password, companyName };
+    const payload = { email, password, companyName, firstName, lastName };
     const token = this.jwtService.sign(payload, {
       expiresIn: '15m', // Token expires in 15 minutes
       secret: this.configService.get<string>('JWT_VERIFICATION_TOKEN_SECRET'),
@@ -107,7 +105,7 @@ export class RegistrationService {
   }
 
   async completeRegistration(token: string): Promise<{ message: string; tenantId: string }> {
-    let payload: { email: string; password: string; companyName: string };
+    let payload: { email: string; password: string; companyName: string; firstName: string; lastName: string; };
     
     this.logger.log('Starting registration completion process');
     this.logger.debug(`Token received (truncated): ${token?.substring(0, 10)}...`);
@@ -195,7 +193,7 @@ export class RegistrationService {
       }
     }
 
-    const { email, password, companyName } = payload;
+    const { email, password, companyName, firstName, lastName } = payload;
 
     // 2. Check if user already exists in Firebase and get their record
     let firebaseUser: admin.auth.UserRecord;
@@ -223,7 +221,7 @@ export class RegistrationService {
             email,
             password,
             emailVerified: true,
-            displayName: companyName,
+            displayName: `${firstName} ${lastName}`,
           });
           this.logger.log('Created new Firebase user', { uid: firebaseUser.uid });
         } else {
@@ -272,28 +270,39 @@ export class RegistrationService {
 
     // 4. Create the User record in the new tenant's schema
     try {
-      await this.tenantsService.executeInTenant(tenant.schemaName, User, async (userRepository: Repository<User>) => {
-        const newUser = userRepository.create({
-          user_id: firebaseUser.uid,
-          email: firebaseUser.email,
-          username: firebaseUser.email,
-          password_hash: 'firebase-managed',
-          role: UserRole.ADMIN,
-          location: null,
-        });
-        await userRepository.save(newUser);
+      await this.tenantsService.executeInTenant(tenant.schemaName, TenantUser, async (userRepository: Repository<TenantUser>) => {
+        await userRepository.createQueryBuilder()
+          .insert()
+          // Pass the TenantUser class to ensure TypeORM uses the correct metadata
+          .into(TenantUser)
+          .values({
+            user_id: firebaseUser.uid,
+            first_name: firstName,
+            last_name: lastName,
+            email: firebaseUser.email,
+            username: firebaseUser.email,
+            password_hash: 'firebase-managed',
+          })
+          .execute();
+
         this.logger.log('Created user record in tenant schema', {
           email,
-          schema: tenant.schemaName
+          schema: tenant.schemaName,
         });
       });
     } catch (error) {
       this.logger.error('Failed to create user record in tenant schema', {
         error: error.message,
-        schema: tenant.schemaName
+        schema: tenant.schemaName,
+        stack: error.stack,
       });
-      // Don't throw here - the user can still function with Firebase auth
-      // Just log the error and continue
+
+      // Rollback: If creating the user record fails, delete the tenant to avoid orphaned data.
+      this.logger.warn(`Rolling back tenant creation for ${tenant.name} due to user creation failure.`);
+      await this.tenantsService.remove(tenant.tenant_id); // Assuming remove can handle schema deletion
+
+      // Re-throw the error so the user knows the full registration failed.
+      throw new InternalServerErrorException('Failed to finalize account setup.');
     }
 
     return { 

@@ -28,7 +28,7 @@ const app = await NestFactory.create(AppModule, {
 
   // For local development, always allow the Next.js dev server
   if (process.env.NODE_ENV !== 'production') {
-    allowedOrigins.push('http://localhost:3001');
+    allowedOrigins.push('http://localhost:3000');  // Frontend runs on 3000
   }
 
   // Add the production frontend URL if it's configured
@@ -38,6 +38,12 @@ const app = await NestFactory.create(AppModule, {
 
   // Log CORS configuration
   console.log('Configuring CORS with allowed origins:', allowedOrigins);
+  
+  // Configure headers to ensure proper JSON responses
+  app.use((req, res, next) => {
+    res.header('Content-Type', 'application/json');
+    next();
+  });
   
   app.enableCors({
     origin: (origin, callback) => {
@@ -54,6 +60,6 @@ const app = await NestFactory.create(AppModule, {
     allowedHeaders: 'Content-Type, Accept, Authorization',
   });
 
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();

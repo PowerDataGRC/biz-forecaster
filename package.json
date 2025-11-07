@@ -11,5 +11,9 @@
     "build": "npm run build:frontend && npm run build:api",
     "build:frontend": "cd biz-forecaster-frontend && npm run build",
     "build:api": "cd biz-forecaster-api && npm run build"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@mui/icons-material": "^7.3.5"
   }
 }
