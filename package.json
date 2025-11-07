@@ -15,5 +15,9 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@mui/icons-material": "^7.3.5"
+  },
+  "devDependencies": {
+    "rimraf": "^6.1.0",
+    "test-exclude": "^7.0.1"
   }
 }

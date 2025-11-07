@@ -18,6 +18,7 @@
 firebase.json
 .firebaserc
 firebase-services-account.json
+biz-forecaster-api/firebase-service-account.json
 
 # Ignore compiled JS files inside the src directory
 biz-forecaster-api/src/**/*.js

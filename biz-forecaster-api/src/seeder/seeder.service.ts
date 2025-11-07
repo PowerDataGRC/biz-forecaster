@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BusinessPlan } from '../business_plans/business-plan.entity';
 import { Activity } from '../activities/activity.entity';
-import { LineItem, LineItemType } from '../Line-items/line-item.entity';
+import { LineItem, LineItemType } from '../line-items/line-item.entity';
 import { Client } from '../clients/client.entity';
 import { User } from '../users/user.entity'; // <-- Add the correct import for the User entity
 import * as sampleActivities from './sample-activities.json';
@@ -18,7 +18,7 @@ export class SeederService {
     private readonly activityRepository: Repository<Activity>,
     @InjectRepository(LineItem)
     private readonly lineItemRepository: Repository<LineItem>,
-  ) {}
+  ) { }
 
   async seedClientActivities(client: Client, user: User) {
     // 1. Create a default Business Plan for the client
