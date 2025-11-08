@@ -21,6 +21,7 @@
     "styled-jsx": "^5.1.1"
   },
   "devDependencies": {
+    "@rushstack/eslint-patch": "^1.10.3",
     "@types/node": "^20.9.0",
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18.2.37",
@@ -31,8 +32,5 @@
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.5",
     "typescript": "^5.2.2"
-  },
-  "overrides": {
-    "eslint": "^8.57.0"
   }
 }

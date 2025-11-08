@@ -1,5 +1,5 @@
 {
-  "name": "biz-forecaster-backend",
+  "name": "biz-forecaster-api",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -58,8 +58,8 @@
     "@types/supertest": "^6.0.3",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
-    "eslint": "^9.39.0",
-    "eslint-config-prettier": "^10.1.8",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.5.4",
     "jest": "^30.2.0",
     "prettier": "^3.6.2",
