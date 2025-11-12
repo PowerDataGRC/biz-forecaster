@@ -1,26 +1,12 @@
-'use client';
+import { MainLayout } from '@/components/layout/MainLayout';
+import React from 'react';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-
-const user = {
-  name: 'John Doe',
-  email: 'john.doe@example.com',
-  imageUrl: 'https://randomuser.me/api/portraits/men/32.jpg',
-};
-
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!user) {
-      router.push('/login');
-    }
-  }, [router]);
-
-  if (!user) {
-    return null; // or a loading spinner
-  }
-
-  return <>{children}</>;
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  // This MainLayout component now wraps all pages within the /dashboard directory,
+  // providing the consistent sidebar and header.
+  return <MainLayout>{children}</MainLayout>;
 }

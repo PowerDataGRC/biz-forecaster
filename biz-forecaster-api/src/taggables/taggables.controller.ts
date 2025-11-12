@@ -2,13 +2,11 @@ import {
   Controller,
   Get,
   Param,
-  Query,
-  UseGuards,
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { TaggablesService } from './taggables.service';
 import { FirebaseAuthGuard } from '../auth/firebase-auth.guard';
-import { TaggableType } from './taggable.entity';
+import { TaggableType } from './Taggable.entity';
 
 @Controller('tags')
 

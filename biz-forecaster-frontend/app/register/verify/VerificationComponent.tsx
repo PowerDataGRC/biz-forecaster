@@ -26,7 +26,7 @@ export default function VerificationComponent() {
           console.error('NEXT_PUBLIC_API_URL is not configured');
           throw new Error('Application configuration error');
         }
-        
+
         console.log('Starting verification:', {
           apiUrl,
           tokenLength: token?.length,
@@ -36,7 +36,7 @@ export default function VerificationComponent() {
         console.log('Making verification request to:', apiUrl);
         const response = await fetch(apiUrl, {
           method: 'POST',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
@@ -50,10 +50,10 @@ export default function VerificationComponent() {
           contentType: response.headers.get('content-type'),
           headers: Object.fromEntries(response.headers.entries())
         });
-        
+
         const responseText = await response.text();
         console.log('Raw response:', responseText);
-        
+
         let data;
         try {
           data = JSON.parse(responseText);
@@ -71,19 +71,19 @@ export default function VerificationComponent() {
           router.push('/'); // Redirect to the main login page
         }, 3000);
 
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Verification error:', {
-          message: err.message,
-          stack: err.stack,
-          response: err.response,
+          message: err instanceof Error ? err.message : 'An unexpected error occurred.'
         });
+
         setStatus('Verification failed.');
-        if (err.message.includes('Invalid token') || err.message.includes('expired')) {
+        const errorMessage = err instanceof Error ? err.message : 'Could not complete registration. Please try again.';
+        if (errorMessage.includes('Invalid token') || errorMessage.includes('expired')) {
           setError('Your verification link has expired. Please request a new one.');
-        } else if (err.message.includes('already registered')) {
+        } else if (errorMessage.includes('already registered')) {
           setError('This account is already registered. Please try logging in.');
         } else {
-          setError(err.message || 'Could not complete registration. Please try again.');
+          setError(errorMessage);
         }
       }
     };

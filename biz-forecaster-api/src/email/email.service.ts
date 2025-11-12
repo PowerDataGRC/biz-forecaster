@@ -1,5 +1,6 @@
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
+import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 
 
@@ -7,42 +8,32 @@ import { join } from 'path';
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
 
-  constructor(private readonly mailerService: MailerService) {}
+  constructor(
+    private readonly mailerService: MailerService,
+    private readonly configService: ConfigService, // Inject ConfigService
+  ) { }
 
   /**
-   * Placeholder for sending a registration email.
-   * In a real application, this would use a service like SendGrid, Mailgun, or Nodemailer.
-   * @param user The recipient's email address.
-   * @param verificationLink The link the user needs to click to verify their email.
+   * Sends a registration verification email to the user.
+   * @param email The recipient's email address.
+   * @param token The JWT verification token.
    */
-
-  async sendRegistrationEmail(email: string, token: string): Promise<void> {
+  async sendRegistrationEmail(to: string, token: string): Promise<void> {
     try {
-      // 1. Validate environment variables
-      const API_URL = process.env.NEXT_PUBLIC_API_URL;
-      const SMTP_HOST = process.env.SMTP_HOST;
-      const SMTP_PORT = process.env.SMTP_PORT;
-      const SMTP_USER = process.env.SMTP_USER;
-
-      this.logger.debug('Email configuration:', {
-        
-        SMTP_HOST,
-        SMTP_PORT,
-        SMTP_USER,
-        templateDir: join(process.cwd(), process.env.NODE_ENV === 'production' ? 'dist/email/templates' : 'src/email/templates')
-      });
-
-      if (!API_URL) {
-        this.logger.error('FATAL: API_URL environment variable is not set in the backend .env file.');
-        throw new InternalServerErrorException('Server configuration error: Missing API_URL.');
+      // 1. Get the frontend URL from the configuration. This is the base for our verification link.
+      const frontendUrl = this.configService.get<string>('FRONTEND_URL');
+      if (!frontendUrl) {
+        this.logger.error('FATAL: FRONTEND_URL environment variable is not set.');
+        throw new InternalServerErrorException('Server configuration error: Missing FRONTEND_URL.');
       }
 
       // 2. Prepare email content
-      const verificationLink = `${API_URL}/registration/verify?token=${token}`;
-      
-      this.logger.log(`Preparing verification email for: ${email}`);
+      // The verification link MUST point to the frontend /verify page.
+      const verificationLink = `${frontendUrl}/register/verify?token=${token}`;
+
+      this.logger.log(`Preparing verification email for: ${to}`);
       this.logger.debug('Email details:', {
-        to: email,
+        to: to,
         tokenLength: token.length,
         tokenPreview: token.substring(0, 10) + '...' + token.substring(token.length - 10),
         verificationLink: verificationLink.replace(token, '...TOKEN...')
@@ -51,7 +42,7 @@ export class EmailService {
       // 3. Send the email
       try {
         const result = await this.mailerService.sendMail({
-          to: email,
+          to: to,
           subject: 'Welcome to BizForecaster! Please Verify Your Email',
           template: 'registration',
           context: {
@@ -59,12 +50,12 @@ export class EmailService {
           },
         });
 
-        this.logger.log(`Email sent successfully to ${email}`, {
+        this.logger.log(`Email sent successfully to ${to}`, {
           messageId: result?.messageId,
           response: result?.response
         });
       } catch (emailError) {
-        this.logger.error(`Failed to send email to ${email}:`, {
+        this.logger.error(`Failed to send email to ${to}:`, {
           error: emailError.message,
           stack: emailError.stack,
           code: emailError.code
@@ -72,7 +63,7 @@ export class EmailService {
         throw new InternalServerErrorException('Failed to send verification email');
       }
     } catch (error) {
-      this.logger.error(`Error in registration email process for ${email}:`, {
+      this.logger.error(`Error in registration email process for ${to}:`, {
         error: error.message,
         stack: error.stack
       });

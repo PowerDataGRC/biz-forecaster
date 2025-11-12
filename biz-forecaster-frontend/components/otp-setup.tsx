@@ -32,7 +32,7 @@ export default function OtpSetup() {
     setError('');
     setSuccess('');
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_UR || 'http://localhost:3001';
       const response = await fetch(`${backendUrl}/api/auth/otp/verify`, {
         method: 'POST',
         headers: {

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Taggable, TaggableType } from './taggable.entity';
+import { Taggable, TaggableType } from './Taggable.entity';
 
 @Injectable()
 export class TaggablesService {

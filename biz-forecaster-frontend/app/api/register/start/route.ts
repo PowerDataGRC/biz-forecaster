@@ -21,35 +21,22 @@ export async function POST(request: Request) {
         status: response.status,
         data
       });
-      
-      return NextResponse.json(data, { 
-        status: response.status 
+
+      return NextResponse.json(data, {
+        status: response.status
       });
     }
 
     return NextResponse.json(data);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Registration route error:', error);
-    
-    // Check if it's a known error type
-    if (error.code === 'EMAIL_EXISTS' || error.code?.startsWith('auth/')) {
-      return NextResponse.json({
-        message: error.message || 'Email already in use',
-        code: error.code,
-        details: error.details
-      }, { 
-        status: 409 
-      });
-    }
-
-    return NextResponse.json({
-      message: 'Registration failed',
-      code: 'INTERNAL_ERROR',
-      details: {
-        suggestion: 'Please try again later or contact support if the problem persists.'
-      }
-    }, { 
-      status: 500 
-    });
+    const message = error instanceof Error ? error.message : 'An unexpected error occurred.';
+    return NextResponse.json(
+      {
+        message: 'Registration failed: ' + message,
+        code: 'INTERNAL_ERROR',
+      },
+      { status: 500 }
+    );
   }
 }

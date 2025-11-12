@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ available: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
       {
         message: 'Could not check email availability',

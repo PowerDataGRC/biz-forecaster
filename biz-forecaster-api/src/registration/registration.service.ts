@@ -25,7 +25,7 @@ export class RegistrationService {
     private readonly jwtService: JwtService,
     private readonly emailService: EmailService,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   async checkEmailAvailability(email: string): Promise<{ available: boolean }> {
     try {
@@ -57,7 +57,7 @@ export class RegistrationService {
   }
 
   async startRegistration(registerDto: RegisterStartDto): Promise<void> {
-    const { email, password, companyName, firstName, lastName } = registerDto;
+    const { email, password, companyName, firstName, lastName, locations } = registerDto;
 
     // Check if user already exists in Firebase
     try {
@@ -94,7 +94,7 @@ export class RegistrationService {
     }
 
     // Generate a verification token
-    const payload = { email, password, companyName, firstName, lastName };
+    const payload = { email, password, companyName, firstName, lastName, locations };
     const token = this.jwtService.sign(payload, {
       expiresIn: '15m', // Token expires in 15 minutes
       secret: this.configService.get<string>('JWT_VERIFICATION_TOKEN_SECRET'),
@@ -105,8 +105,8 @@ export class RegistrationService {
   }
 
   async completeRegistration(token: string): Promise<{ message: string; tenantId: string }> {
-    let payload: { email: string; password: string; companyName: string; firstName: string; lastName: string; };
-    
+    let payload: { email: string; password: string; companyName: string; firstName: string; lastName: string; locations: string[]; };
+
     this.logger.log('Starting registration completion process');
     this.logger.debug(`Token received (truncated): ${token?.substring(0, 10)}...`);
     this.logger.debug('JWT secret configured:', !!this.configService.get<string>('JWT_VERIFICATION_TOKEN_SECRET'));
@@ -114,9 +114,9 @@ export class RegistrationService {
     // 1. Verify the token
     try {
       if (!token || typeof token !== 'string') {
-        this.logger.error('Invalid token format received', { 
+        this.logger.error('Invalid token format received', {
           tokenType: typeof token,
-          tokenValue: token?.substring(0, 10) 
+          tokenValue: token?.substring(0, 10)
         });
         throw new BadRequestException('Invalid token format');
       }
@@ -134,12 +134,12 @@ export class RegistrationService {
         hasSecret: !!secret,
         secretLength: secret?.length
       });
-      
+
       try {
         payload = this.jwtService.verify(token, { secret });
         const decodedToken = this.jwtService.decode(token) as any;
-        
-        this.logger.log('Token verification successful', { 
+
+        this.logger.log('Token verification successful', {
           email: payload.email,
           companyName: payload.companyName,
           payloadKeys: Object.keys(payload),
@@ -193,7 +193,7 @@ export class RegistrationService {
       }
     }
 
-    const { email, password, companyName, firstName, lastName } = payload;
+    const { email, password, companyName, firstName, lastName, locations } = payload;
 
     // 2. Check if user already exists in Firebase and get their record
     let firebaseUser: admin.auth.UserRecord;
@@ -202,17 +202,17 @@ export class RegistrationService {
         // First try to get existing user
         firebaseUser = await admin.auth().getUserByEmail(email);
         this.logger.warn('User already exists in Firebase', { email });
-        
+
         // If we find the user, verify if we have a corresponding tenant
         const existingTenant = await this.tenantsService.findByUserEmail(email);
         if (existingTenant) {
           // User exists in both Firebase and has a tenant - return success
-          return { 
-            message: 'Account already verified', 
-            tenantId: existingTenant.tenant_id 
+          return {
+            message: 'Account already verified',
+            tenantId: existingTenant.tenant_id
           };
         }
-        
+
         // User exists in Firebase but no tenant - continue with tenant creation
       } catch (e) {
         if (e.code === 'auth/user-not-found') {
@@ -229,10 +229,10 @@ export class RegistrationService {
         }
       }
     } catch (error) {
-      this.logger.error('Firebase operation failed', { 
+      this.logger.error('Firebase operation failed', {
         code: error.code,
         message: error.message,
-        email 
+        email
       });
       throw new InternalServerErrorException('Failed to process user account.');
     }
@@ -241,16 +241,17 @@ export class RegistrationService {
     let tenant;
     try {
       const subdomain = companyName.toLowerCase().replace(/[^a-z0-9]/g, '');
-      tenant = await this.tenantsService.create({ 
-        name: companyName, 
-        subdomain
+      tenant = await this.tenantsService.create({
+        name: companyName,
+        subdomain,
+        locations
       });
-      this.logger.log('Created new tenant', { 
+      this.logger.log('Created new tenant', {
         tenantId: tenant.tenant_id,
         schema: tenant.schemaName
       });
     } catch (error) {
-      this.logger.error('Failed to create tenant', { 
+      this.logger.error('Failed to create tenant', {
         error: error.message,
         companyName
       });
@@ -305,9 +306,9 @@ export class RegistrationService {
       throw new InternalServerErrorException('Failed to finalize account setup.');
     }
 
-    return { 
-      message: 'Registration successful!', 
-      tenantId: tenant.tenant_id 
+    return {
+      message: 'Registration successful!',
+      tenantId: tenant.tenant_id
     };
   }
 

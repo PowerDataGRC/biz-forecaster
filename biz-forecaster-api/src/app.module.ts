@@ -1,5 +1,5 @@
-import { forwardRef, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { forwardRef, MiddlewareConsumer, Module, NestModule, OnModuleInit, Inject } from '@nestjs/common';
+import { TypeOrmModule, TypeOrmModuleOptions, getDataSourceToken } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { AppController } from './app.controller';
@@ -10,6 +10,7 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { RegistrationModule } from './registration/registration.module';
 import { TenantMiddleware } from './tenants/tenant.middleware';
 import { FirebaseModule } from './firebase/firebase.module'; // Ensure this is uncommented
+import { DataSource } from 'typeorm';
 // Only import entities that live in the 'public' schema for the main connection
 import { Tenant } from './tenants/tenant.entity';
 import { Subscription } from './subscriptions/subscription.entity';
@@ -82,8 +83,16 @@ import { TaggablesModule } from './taggables/taggables.module';
   controllers: [AppController], // TenantContextService is now provided by TenantsModule
   providers: [AppService],
 })
-export class AppModule implements NestModule {
+export class AppModule implements NestModule, OnModuleInit {
+  constructor(
+    @Inject(getDataSourceToken()) private readonly dataSource: DataSource,
+  ) {}
+
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(TenantMiddleware).forRoutes('*');
+  }
+
+  async onModuleInit(): Promise<void> {
+    await this.dataSource.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
   }
 }

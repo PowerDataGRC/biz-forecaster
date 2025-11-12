@@ -6,7 +6,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, DataSourceOptions, EntityMetadata } from 'typeorm';
+import { Repository, DataSource, QueryRunner, EntityMetadata } from 'typeorm';
 import { Tenant } from './tenant.entity'; // Corrected import path
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { UpdateTenantDto } from './dto/update-tenant.dto'; // Assuming this DTO exists in the same folder
@@ -21,7 +21,7 @@ export class TenantsService {
     private readonly tenantRepository: Repository<Tenant>,
     private readonly dataSource: DataSource, // Keep the DataSource private
     private readonly schemaFactory: SchemaFactoryService, // Inject the new factory
-  ) {}
+  ) { }
 
   /**
    * Executes a database operation within the context of a specific tenant's schema.
@@ -58,29 +58,45 @@ export class TenantsService {
   }
 
   async create(createTenantDto: CreateTenantDto): Promise<Tenant> {
-    const { subdomain, name } = createTenantDto;
+    const { subdomain, name, locations } = createTenantDto;
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    // Ensure subdomain is unique
-    const existingTenant = await this.tenantRepository.findOneBy({ subdomain });
-    if (existingTenant) {
-      throw new ConflictException(`Tenant with subdomain "${subdomain}" already exists.`);
+    try {
+      // Ensure subdomain is unique within the transaction
+      const existingTenant = await queryRunner.manager.findOneBy(Tenant, { subdomain });
+      if (existingTenant) {
+        throw new ConflictException(`Tenant with subdomain "${subdomain}" already exists.`);
+      }
+
+      // Generate the schema name using the factory
+      const schemaName = this.schemaFactory.generateSchemaName(name);
+
+      const newTenant = queryRunner.manager.create(Tenant, {
+        name,
+        subdomain,
+        schemaName, // Save the generated schema name
+      });
+
+      const savedTenant = await queryRunner.manager.save(newTenant);
+
+      // After successfully creating the tenant record, create its dedicated schema and tables.
+      await this.createTenantSchema(queryRunner, savedTenant.schemaName, locations);
+
+      await queryRunner.commitTransaction();
+      return savedTenant;
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      this.logger.error(`Failed during tenant creation for subdomain ${subdomain}: ${errorMessage}`);
+      if (err instanceof ConflictException) {
+        throw err;
+      }
+      throw new InternalServerErrorException('Failed to create the organization.');
+    } finally {
+      await queryRunner.release();
     }
-
-    // Generate the schema name using the factory
-    const schemaName = this.schemaFactory.generateSchemaName(name);
-
-    const newTenant = this.tenantRepository.create({
-      name,
-      subdomain,
-      schemaName, // Save the generated schema name
-    });
-
-    const savedTenant = await this.tenantRepository.save(newTenant);
-
-    // After successfully creating the tenant record, create its dedicated schema and tables.
-    await this.createTenantSchema(savedTenant.schemaName);
-
-    return savedTenant;
   }
 
   async findAll(): Promise<Tenant[]> {
@@ -95,30 +111,18 @@ export class TenantsService {
    * Creates a new schema for a tenant and populates it with the necessary tables.
    * @param schemaName - The name of the schema to create (typically the tenant's subdomain).
    */
-  private async createTenantSchema(schemaName: string): Promise<void> {
+  private async createTenantSchema(queryRunner: QueryRunner, schemaName: string, locations: string[]): Promise<void> {
     // Allow lowercase letters, numbers and underscores in schema names
     if (!/^[a-z0-9_]+$/.test(schemaName)) {
       throw new Error(`Invalid schema name: ${schemaName}`);
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
     try {
-      await queryRunner.connect();
       // Create the schema for the new tenant
       await queryRunner.createSchema(schemaName, true);
 
-      // Ensure uuid extension is available before creating tables. Creating it in the
-      // public schema is safer for most hosted Postgres providers and avoids permission issues.
-      await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
-
-      // Set search path to the new schema
-      await queryRunner.query(`SET search_path TO "${schemaName}"`);
-
       // Create tables in the new schema
-      await this.schemaFactory.createTenantTables(queryRunner, schemaName);
-
-      // Reset search path to public
-      await queryRunner.query(`SET search_path TO "public"`);
+      await this.schemaFactory.createTenantTables(queryRunner, schemaName, locations);
 
       this.logger.log(`Schema "${schemaName}" and tables created successfully.`);
     } catch (err) {
@@ -126,13 +130,8 @@ export class TenantsService {
       this.logger.error(
         `Failed to create schema for tenant ${schemaName}: ${errorMessage}`,
       );
-      // Throw a specific NestJS HTTP exception, which will be sent to the client.
-      throw new InternalServerErrorException(
-        'Failed to set up the organization environment. Please contact support.',
-      );
-    } finally {
-      // Ensure the temporary connection is always closed.
-      await queryRunner.release();
+      // Re-throw the error to be caught by the transactional block
+      throw new Error(`Failed to create schema or tables: ${errorMessage}`);
     }
   }
 
@@ -172,7 +171,7 @@ export class TenantsService {
          LIMIT 1`,
         [email]
       );
-      
+
       if (result && result.length > 0) {
         return this.tenantRepository.create(result[0] as Partial<Tenant>);
       }

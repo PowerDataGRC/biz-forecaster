@@ -3,21 +3,20 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../lib/firebase';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useIsClient } from '../hooks/useIsClient';
 import { getFirebaseErrorMessage } from '../lib/firebaseErrors';
 
 export default function AuthPage() {
   const { user } = useAuth();
   const isClient = useIsClient();
-  const [activeTab, setActiveTab] = useState('login');
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [error, setError] = useState<string | null>(null); // State to hold error messages
   const router = useRouter();
 
-  
+
   const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setLoginData(prevState => ({ ...prevState, [name]: value }));

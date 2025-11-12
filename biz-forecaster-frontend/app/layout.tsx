@@ -1,14 +1,10 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import Navbar from "../components/Navbar";
-import { AuthProvider } from "../context/AuthContext";
+import React from 'react';
+import './globals.css'; // Assuming you have a global stylesheet
+import { AuthProvider } from '@/contexts/AuthContext';
 
-const inter = Inter({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "BizForecaster",
-  description: "A business forecasting tool",
+export const metadata = {
+  title: 'BizForecaster',
+  description: 'Your Business Forecasting Solution',
 };
 
 export default function RootLayout({
@@ -18,10 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         <AuthProvider>
-          <Navbar />
-          <main>{children}</main>
+          {children}
         </AuthProvider>
       </body>
     </html>

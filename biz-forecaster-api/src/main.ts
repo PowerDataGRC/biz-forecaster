@@ -3,19 +3,21 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { ConsoleLogger } from './core/logging/console.logger';
 import { AllExceptionsFilter } from './core/filters/database-error.filter';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   // The FirebaseService uses onModuleInit to initialize, so we don't need to do it here.
   // By setting abortOnError to true (or removing it, as true is the default), we ensure that the
   // application exits immediately on the first error, giving us a more accurate stack trace
   // instead of a generic ECONNRESET from a lingering process.
-//  const app = await NestFactory.create(AppModule, { logger, abortOnError: true });
+  //  const app = await NestFactory.create(AppModule, { logger, abortOnError: true });
 
-  
-const app = await NestFactory.create(AppModule, {
-  logger: new ConsoleLogger({ prefix: 'BizForecaster' }), abortOnError: true
-});
 
+  const app = await NestFactory.create(AppModule, {
+    logger: new ConsoleLogger({ prefix: 'BizForecaster' }), abortOnError: true
+  });
+
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
   // Apply the custom exception filter globally
   const httpAdapterHost = app.get(HttpAdapterHost);
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapterHost));
@@ -38,13 +40,13 @@ const app = await NestFactory.create(AppModule, {
 
   // Log CORS configuration
   console.log('Configuring CORS with allowed origins:', allowedOrigins);
-  
+
   // Configure headers to ensure proper JSON responses
   app.use((req, res, next) => {
     res.header('Content-Type', 'application/json');
     next();
   });
-  
+
   app.enableCors({
     origin: (origin, callback) => {
       console.log('Incoming request from origin:', origin);

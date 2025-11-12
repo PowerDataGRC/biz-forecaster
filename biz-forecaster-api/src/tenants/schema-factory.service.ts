@@ -46,7 +46,7 @@ export class SchemaFactoryService {
    * @param queryRunner The TypeORM query runner to use
    * @param schemaName The name of the schema to create tables in
    */
-  async createTenantTables(queryRunner: QueryRunner, schemaName: string): Promise<void> {
+  async createTenantTables(queryRunner: QueryRunner, schemaName: string, locations: string[]): Promise<void> {
     try {
       // Create users table
       await queryRunner.query(`
@@ -74,6 +74,15 @@ export class SchemaFactoryService {
           updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
         );
       `);
+
+      // Insert the provided locations
+      const locationValues = locations.map(name => `('${name}')`).join(',');
+      if (locationValues) {
+        await queryRunner.query(`
+          INSERT INTO "${schemaName}".locations (name)
+          VALUES ${locationValues};
+        `);
+      }
 
       await queryRunner.query(`
         CREATE TABLE "${schemaName}".clients (

@@ -3,13 +3,13 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { auth } from '../lib/firebase';
 import { signOut } from 'firebase/auth';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, loading } = useAuth();
+  const { user, isLoading } = useAuth();
   const router = useRouter();
 
   const handleSignOut = async () => {
@@ -35,7 +35,7 @@ export default function Navbar() {
           </div>
           <div className="hidden md:block">
             <div className="ml-10 flex items-center space-x-4">
-              {!loading && user ? (
+              {!isLoading && user ? (
                 <>
                   <Link href="/dashboard" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                     Dashboard
@@ -46,7 +46,7 @@ export default function Navbar() {
                   <Link href="/dashboard/library" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                     Library
                   </Link>
-                  <span className="text-gray-300">Hello, {user.email}</span>
+                  <span className="text-gray-300">Hello, {user?.email}</span>
                   <button onClick={handleSignOut} className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                     Sign out
                   </button>
@@ -81,7 +81,7 @@ export default function Navbar() {
       {isOpen && (
         <div className="md:hidden" id="mobile-menu">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {!loading && user ? (
+            {!isLoading && user ? (
               <>
                 <div className="flex items-center px-5 py-4">
                   <div className="ml-3">
