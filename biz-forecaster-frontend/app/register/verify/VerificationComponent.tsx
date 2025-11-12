@@ -21,12 +21,7 @@ export default function VerificationComponent() {
 
     const completeRegistration = async () => {
       try {
-        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/registration/complete`;
-        if (!process.env.NEXT_PUBLIC_API_URL) {
-          console.error('NEXT_PUBLIC_API_URL is not configured');
-          throw new Error('Application configuration error');
-        }
-
+        const apiUrl = `/api/register/complete`; // Use the local proxy route
         console.log('Starting verification:', {
           apiUrl,
           tokenLength: token?.length,
