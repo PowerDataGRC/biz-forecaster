@@ -1,8 +1,6 @@
-/** @type {import('next').NextConfig} */
 const path = require('path');
-
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-
     reactStrictMode: true,
     // This rewrites rule acts as a proxy during development.
     // It forwards any request made to the frontend's /api/* path
